@@ -31,12 +31,31 @@ export async function GET() {
       .select("*", { count: "exact", head: true });
 
     if (error) {
+      // Surface the full error shape so we can debug production failures.
+      // Supabase errors carry { message, details, hint, code } — at least one
+      // is almost always populated. We also report whether each env var is
+      // present (NOT the values — never leak secrets through an HTTP response).
       return NextResponse.json(
         {
           ok: false,
           stage: "supabase_query",
-          message: error.message,
+          message: error.message || "(empty message from supabase client)",
+          code: error.code ?? null,
+          details: error.details ?? null,
           hint: error.hint ?? null,
+          envCheck: {
+            NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL
+              ? "set"
+              : "missing",
+            NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env
+              .NEXT_PUBLIC_SUPABASE_ANON_KEY
+              ? `set (prefix: ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.slice(0, 20)}...)`
+              : "missing",
+            SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY
+              ? "set"
+              : "missing",
+          },
+          rawError: JSON.parse(JSON.stringify(error)),
           latencyMs: Date.now() - startedAt,
         },
         { status: 500 }
