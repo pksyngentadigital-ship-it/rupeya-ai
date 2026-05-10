@@ -1,87 +1,119 @@
-// Rupeya.ai — Health check endpoint
+// Rupeya.ai — Health check endpoint (with raw-fetch diagnostic)
 // -----------------------------------------------------------
 // GET /api/health
 //
 // Returns a JSON status object proving the full chain works:
 //   browser → Next.js route handler → Supabase REST → Postgres → back.
 //
-// We hit this after every deploy as the first smoke test. If it returns
-// `ok: true` with a non-zero `stockCount`, the foundation is healthy.
-// If `ok: false`, the response body tells us where the chain broke.
+// In addition to the supabase-js client probe, this version also runs
+// a raw fetch() against Supabase's REST endpoint. Comparing the two
+// tells us whether failures are in the network/auth layer or in the
+// supabase-js wrapper.
 // -----------------------------------------------------------
 
 import { NextResponse } from "next/server";
 import { supabaseAnon } from "@/lib/supabase";
 import { isAnthropicConfigured } from "@/lib/anthropic";
 
-// Always run on the server, never cache — health checks must be live.
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function GET() {
   const startedAt = Date.now();
 
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  const envCheck = {
+    NEXT_PUBLIC_SUPABASE_URL: SUPABASE_URL ? "set" : "missing",
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: SUPABASE_ANON_KEY
+      ? `set (prefix: ${SUPABASE_ANON_KEY.slice(0, 20)}..., length: ${SUPABASE_ANON_KEY.length})`
+      : "missing",
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY
+      ? "set"
+      : "missing",
+  };
+
+  // ---------------- Probe 1: raw fetch to PostgREST ----------------
+  let rawProbe: Record<string, unknown> = { skipped: true };
+  if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+    try {
+      const rawStart = Date.now();
+      const url = `${SUPABASE_URL}/rest/v1/stocks?select=ticker&limit=1`;
+      const resp = await fetch(url, {
+        method: "GET",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Accept: "application/json",
+        },
+        cache: "no-store",
+      });
+      const bodyText = await resp.text();
+      rawProbe = {
+        status: resp.status,
+        statusText: resp.statusText,
+        contentType: resp.headers.get("content-type"),
+        bodyLength: bodyText.length,
+        bodyPreview: bodyText.slice(0, 500),
+        latencyMs: Date.now() - rawStart,
+      };
+    } catch (err) {
+      rawProbe = {
+        error: true,
+        message: err instanceof Error ? err.message : String(err),
+        name: err instanceof Error ? err.name : null,
+      };
+    }
+  }
+
+  // ---------------- Probe 2: supabase-js client ----------------
+  let clientProbe: Record<string, unknown> = { skipped: true };
   try {
     const supabase = supabaseAnon();
-
-    // Probe 1: count rows in `stocks`. Uses the public-read RLS policy,
-    // so this works without any user session.
-    const { count, error } = await supabase
+    const clientStart = Date.now();
+    const { count, error, status, statusText } = await supabase
       .from("stocks")
       .select("*", { count: "exact", head: true });
 
-    if (error) {
-      // Surface the full error shape so we can debug production failures.
-      // Supabase errors carry { message, details, hint, code } — at least one
-      // is almost always populated. We also report whether each env var is
-      // present (NOT the values — never leak secrets through an HTTP response).
-      return NextResponse.json(
-        {
-          ok: false,
-          stage: "supabase_query",
-          message: error.message || "(empty message from supabase client)",
-          code: error.code ?? null,
-          details: error.details ?? null,
-          hint: error.hint ?? null,
-          envCheck: {
-            NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL
-              ? "set"
-              : "missing",
-            NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env
-              .NEXT_PUBLIC_SUPABASE_ANON_KEY
-              ? `set (prefix: ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.slice(0, 20)}...)`
-              : "missing",
-            SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY
-              ? "set"
-              : "missing",
-          },
-          rawError: JSON.parse(JSON.stringify(error)),
-          latencyMs: Date.now() - startedAt,
-        },
-        { status: 500 }
-      );
-    }
+    clientProbe = {
+      ok: !error,
+      count: count ?? null,
+      status,
+      statusText,
+      error: error
+        ? {
+            message: error.message || "(empty)",
+            code: error.code ?? null,
+            details: error.details ?? null,
+            hint: error.hint ?? null,
+            raw: JSON.parse(JSON.stringify(error)),
+          }
+        : null,
+      latencyMs: Date.now() - clientStart,
+    };
+  } catch (err) {
+    clientProbe = {
+      exception: true,
+      message: err instanceof Error ? err.message : String(err),
+    };
+  }
 
-    return NextResponse.json({
-      ok: true,
+  const overallOk =
+    rawProbe && (rawProbe.status === 200 || rawProbe.status === 206);
+
+  return NextResponse.json(
+    {
+      ok: overallOk,
       service: "rupeya-ai",
       env: process.env.VERCEL_ENV ?? "local",
-      supabase: "connected",
-      stockCount: count ?? 0,
       anthropic: isAnthropicConfigured() ? "configured" : "missing",
-      latencyMs: Date.now() - startedAt,
+      envCheck,
+      rawProbe,
+      clientProbe,
+      totalLatencyMs: Date.now() - startedAt,
       timestamp: new Date().toISOString(),
-    });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return NextResponse.json(
-      {
-        ok: false,
-        stage: "exception",
-        message,
-        latencyMs: Date.now() - startedAt,
-      },
-      { status: 500 }
-    );
-  }
+    },
+    { status: overallOk ? 200 : 500 }
+  );
 }
