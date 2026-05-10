@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rupeya.ai — ENGRO · Engro Corporation</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+    .nav-app a.active { color: var(--text); border-bottom: 2px solid var(--accent); padding-bottom: 16px; margin-bottom: -16px; }
+    .price-big { font-size: 36px; font-weight: 700; letter-spacing: -.01em; }
+    .pl-pos { color: var(--accent); }
+    .pl-neg { color: var(--danger); }
+    .pillar { padding: 18px; }
+    .pillar-name { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; }
+    .pillar-num { font-size: 28px; font-weight: 700; }
+    .iv-bar { position: relative; height: 56px; background: var(--surface-alt); border-radius: 10px; margin-top: 16px; overflow: hidden; }
+    .iv-fill { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--accent-soft), var(--accent)); border-radius: 10px; }
+    .iv-marker { position: absolute; top: -8px; bottom: -8px; width: 2px; background: var(--text); }
+    .iv-label { position: absolute; top: -22px; transform: translateX(-50%); font-size: 11px; color: var(--text); white-space: nowrap; }
+    .fin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 800px) { .fin-grid { grid-template-columns: repeat(2, 1fr); } }
+    .fin { padding: 14px; background: var(--surface-alt); border-radius: 10px; }
+    .fin-label { font-size: 12px; color: var(--text-muted); }
+    .fin-num { font-size: 20px; font-weight: 700; margin-top: 4px; }
+    .news-row { padding: 14px 0; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 70px 1fr 100px; gap: 14px; align-items: center; }
+    .news-row:last-child { border-bottom: 0; }
+    .news-source { font-size: 11px; padding: 3px 8px; background: var(--surface-alt); border-radius: 6px; color: var(--text-muted); text-align: center; }
+  </style>
+</head>
+<body>
+
+<nav class="nav nav-app">
+  <div class="container nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">₨</span>
+      <span>Rupeya<span class="ai">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="stock.html" class="active">Stocks</a>
+      <a href="compare.html">Compare</a>
+      <a href="portfolio-doctor.html">Doctor</a>
+      <a href="ask-rupeya.html">Ask Rupeya</a>
+      <span class="avatar" title="Khalid">K</span>
+    </div>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<section style="border-bottom: 1px solid var(--border); background: var(--surface);">
+  <div class="container" style="padding: 14px 24px;">
+    <p class="tiny"><a href="dashboard.html">Dashboard</a> &nbsp;›&nbsp; Stocks &nbsp;›&nbsp; <span style="color: var(--text);">ENGRO</span></p>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container">
+
+    <!-- HEADER STRIP -->
+    <div class="row between wrap" style="gap: 16px;">
+      <div>
+        <div class="row" style="gap: 12px; flex-wrap: wrap;">
+          <h1 style="font-size: 32px;">ENGRO</h1>
+          <span class="chip">☪ Shariah-compliant</span>
+          <span class="chip">Conglomerate</span>
+          <span class="chip chip-accent">⚖️ Dividend + Growth</span>
+        </div>
+        <p class="muted mt-8">Engro Corporation Limited · Listed since 1965 · Market cap PKR 168 Bn</p>
+      </div>
+      <div style="text-align: right;">
+        <div class="price-big">PKR 295.40</div>
+        <div class="pl-pos" style="font-size: 14px; font-weight: 600;">+2.40 (+0.82%) today</div>
+      </div>
+    </div>
+
+    <!-- VERDICT BAR -->
+    <div class="card card-hl mt-24" style="padding: 24px;">
+      <div class="row between wrap" style="gap: 24px;">
+        <div>
+          <div class="tiny">Rupeya Research Signal</div>
+          <div class="row" style="gap: 12px; margin-top: 8px;">
+            <span class="badge badge-strong-buy" style="font-size: 14px; padding: 6px 12px;">STRONG BUY</span>
+            <span style="font-size: 22px; font-weight: 700;">4.2 <span class="muted" style="font-size: 14px; font-weight: 400;">/ 5</span></span>
+          </div>
+          <p class="muted mt-8" style="max-width: 520px;">High-quality conglomerate trading at a 24% discount to intrinsic value, with durable cash flows and a credible capital-allocation track record.</p>
+        </div>
+        <div class="col" style="gap: 6px; min-width: 180px;">
+          <div class="row between"><span class="tiny">Intrinsic value</span><span style="font-weight: 600;">PKR 387</span></div>
+          <div class="row between"><span class="tiny">Margin of safety</span><span style="font-weight: 600; color: var(--accent);">+24%</span></div>
+          <div class="row between"><span class="tiny">Forward div yield</span><span style="font-weight: 600;">8.1%</span></div>
+          <div class="row between"><span class="tiny">5Y avg ROE</span><span style="font-weight: 600;">19.6%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 PILLARS -->
+    <h3 class="mt-32 mb-16">Score breakdown · 4 pillars</h3>
+    <div class="grid-4">
+      <div class="card pillar">
+        <div class="pillar-name">Business Quality</div>
+        <div class="pillar-num mt-8">4.1<span class="muted" style="font-size: 14px; font-weight: 400;">/5</span></div>
+        <div class="scorebar mt-16"><div class="scorebar-track"><div class="scorebar-fill" style="width: 82%;"></div></div></div>
+        <p class="tiny mt-16">Diversified moat across fertilizer, foods, telecom; durable management.</p>
+      </div>
+      <div class="card pillar">
+        <div class="pillar-name">Financial Health</div>
+        <div class="pillar-num mt-8">4.0<span class="muted" style="font-size: 14px; font-weight: 400;">/5</span></div>
+        <div class="scorebar mt-16"><div class="scorebar-track"><div class="scorebar-fill" style="width: 80%;"></div></div></div>
+        <p class="tiny mt-16">19.6% 5Y avg ROE, FCF/Net Income 0.94, D/E 0.6 — investment-grade.</p>
+      </div>
+      <div class="card pillar">
+        <div class="pillar-name">Valuation</div>
+        <div class="pillar-num mt-8">4.5<span class="muted" style="font-size: 14px; font-weight: 400;">/5</span></div>
+        <div class="scorebar mt-16"><div class="scorebar-track"><div class="scorebar-fill" style="width: 90%;"></div></div></div>
+        <p class="tiny mt-16">P/E 6.2x vs 5Y avg 8.4x, +24% margin of safety vs DCF.</p>
+      </div>
+      <div class="card pillar">
+        <div class="pillar-name">Catalysts</div>
+        <div class="pillar-num mt-8">4.0<span class="muted" style="font-size: 14px; font-weight: 400;">/5</span></div>
+        <div class="scorebar mt-16"><div class="scorebar-track"><div class="scorebar-fill" style="width: 80%;"></div></div></div>
+        <p class="tiny mt-16">Q1 beat, gas-pricing reform, potential Engro Foods listing.</p>
+      </div>
+    </div>
+
+    <!-- INTRINSIC VALUE VS MARKET -->
+    <div class="card mt-24" style="padding: 28px;">
+      <h3>Intrinsic value vs market price</h3>
+      <p class="muted mt-8" style="font-size: 14px;">Two-stage DCF using KIBOR + 7% equity risk premium · 10-year explicit + terminal.</p>
+      <div class="iv-bar">
+        <div class="iv-fill" style="width: 76%;"></div>
+        <div class="iv-marker" style="left: 76%;"><div class="iv-label">Market PKR 295</div></div>
+        <div class="iv-marker" style="left: 100%; background: var(--accent);"><div class="iv-label" style="color: var(--accent);">Intrinsic PKR 387</div></div>
+      </div>
+      <div class="mt-16 row between"><span class="tiny">PKR 0</span><span class="tiny">PKR 387 (fair)</span></div>
+      <p class="mt-24" style="font-size: 14px;">Sensitivity: at 11% discount rate &amp; 4% terminal growth, fair value is <strong>PKR 387</strong>. Worst-case (13% discount, 2% terminal) <strong>PKR 312</strong>. Best-case (10% discount, 5% terminal) <strong>PKR 458</strong>.</p>
+    </div>
+
+    <!-- AI MEMO -->
+    <div class="card mt-24" style="padding: 28px;">
+      <div class="row between">
+        <h3>🤖 Rupeya's analysis</h3>
+        <span class="chip">Updated today · 7:18 PM</span>
+      </div>
+      <p class="muted mt-16" style="line-height: 1.85;">
+        <strong style="color: var(--text);">The thesis.</strong> Engro is one of a small handful of Pakistani holding companies that has compounded book value at &gt;15% per year through multiple political and currency cycles. Its fertilizer subsidiary (EFERT, separately listed) prints cash through inflation, foods owns &gt;50% of dairy, and telecom infrastructure (towers) earns USD-linked rents — three uncorrelated streams, all Shariah-compliant under KMI screens.
+      </p>
+      <p class="muted mt-16" style="line-height: 1.85;">
+        <strong style="color: var(--text);">What's working.</strong> Q1 FY26 net income +18% YoY on better fertilizer realizations and a stable PKR. Free cash flow is 94% of net income — earnings are real, not accruals. Net debt to equity sits at 0.6x, well within long-term tolerance. Dividend payout is sustainable at 50% with FCF coverage of 1.9x.
+      </p>
+      <p class="muted mt-16" style="line-height: 1.85;">
+        <strong style="color: var(--text);">What to watch.</strong> A re-imposition of gas subsidy reform delays would compress fertilizer margins. Sub-conglomerate discount could persist if management does not list Engro Foods by FY27. We'd flip from <strong style="color: var(--accent);">STRONG BUY</strong> to <strong>BUY</strong> if the price re-rates above PKR 360 without commensurate earnings growth.
+      </p>
+      <p class="tiny mt-16">Sources: Engro Q1 FY26 filing · Engro 2025 Annual Report · Mettis Global · Business Recorder · PSX announcements</p>
+    </div>
+
+    <!-- KEY FINANCIALS -->
+    <div class="card mt-24" style="padding: 28px;">
+      <h3>Key financials</h3>
+      <div class="fin-grid mt-16">
+        <div class="fin"><div class="fin-label">Revenue 5Y CAGR</div><div class="fin-num">14.2%</div></div>
+        <div class="fin"><div class="fin-label">EPS 5Y CAGR</div><div class="fin-num">12.8%</div></div>
+        <div class="fin"><div class="fin-label">ROE (5Y avg)</div><div class="fin-num">19.6%</div></div>
+        <div class="fin"><div class="fin-label">ROIC (latest)</div><div class="fin-num">15.3%</div></div>
+        <div class="fin"><div class="fin-label">Debt / Equity</div><div class="fin-num">0.6x</div></div>
+        <div class="fin"><div class="fin-label">Interest coverage</div><div class="fin-num">6.4x</div></div>
+        <div class="fin"><div class="fin-label">FCF / Net Income</div><div class="fin-num">94%</div></div>
+        <div class="fin"><div class="fin-label">P/E (TTM)</div><div class="fin-num">6.2x</div></div>
+        <div class="fin"><div class="fin-label">P/E (5Y avg)</div><div class="fin-num">8.4x</div></div>
+        <div class="fin"><div class="fin-label">EV / EBITDA</div><div class="fin-num">3.9x</div></div>
+        <div class="fin"><div class="fin-label">Dividend yield</div><div class="fin-num">8.1%</div></div>
+        <div class="fin"><div class="fin-label">Payout ratio</div><div class="fin-num">50%</div></div>
+      </div>
+    </div>
+
+    <!-- NEWS -->
+    <div class="card mt-24" style="padding: 28px;">
+      <h3>Recent news &amp; filings</h3>
+      <div class="mt-16">
+        <div class="news-row">
+          <span class="tiny">8 May</span>
+          <div>
+            <div style="font-weight: 600;">Engro Corp posts 18% YoY rise in Q1 net profit</div>
+            <p class="tiny mt-8">Driven by stronger fertilizer offtake and stable input costs. Management guides for steady payout.</p>
+          </div>
+          <span class="news-source">Business Recorder</span>
+        </div>
+        <div class="news-row">
+          <span class="tiny">2 May</span>
+          <div>
+            <div style="font-weight: 600;">PSX filing: Board approves PKR 12 interim dividend</div>
+            <p class="tiny mt-8">Ex-date 18 May 2026 · payable 5 June 2026 · 8.1% annualized yield at current price.</p>
+          </div>
+          <span class="news-source">PSX</span>
+        </div>
+        <div class="news-row">
+          <span class="tiny">28 Apr</span>
+          <div>
+            <div style="font-weight: 600;">Sarmaya: Why Engro remains a "boring brilliance" Pakistan compounder</div>
+            <p class="tiny mt-8">Independent analyst notes the holding-company discount has widened to 18%.</p>
+          </div>
+          <span class="news-source">Sarmaya</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATALYSTS -->
+    <div class="card mt-24" style="padding: 28px;">
+      <h3>Upcoming catalysts</h3>
+      <div class="mt-16" style="display: grid; gap: 12px;">
+        <div class="row between"><span><span class="dot dot-good"></span> Q2 FY26 results</span><span class="tiny">Aug 2026</span></div>
+        <div class="row between"><span><span class="dot dot-good"></span> Engro Foods listing decision</span><span class="tiny">FY26-FY27</span></div>
+        <div class="row between"><span><span class="dot dot-warn"></span> Gas-pricing reform clarification</span><span class="tiny">Q3 2026</span></div>
+        <div class="row between"><span><span class="dot dot-good"></span> Annual dividend</span><span class="tiny">Mar 2027</span></div>
+      </div>
+    </div>
+
+    <!-- ACTION BAR -->
+    <div class="card mt-24 row between wrap" style="padding: 22px; gap: 14px;">
+      <div>
+        <h4>Take action</h4>
+        <p class="tiny mt-8">Rupeya never executes trades. You'll buy/sell through your existing broker.</p>
+      </div>
+      <div class="row" style="gap: 8px;">
+        <a class="btn btn-soft" href="ask-rupeya.html">💬 Ask about ENGRO</a>
+        <button class="btn btn-ghost">+ Add to watchlist</button>
+        <button class="btn btn-primary">Already own this →</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p class="disclaimer">
+      <strong>Important:</strong> Rupeya.ai is an educational research tool, not a SECP-licensed
+      investment advisor. The "Strong Buy" verdict shown above is a research signal generated
+      by AI from public information, not a recommendation to trade. You alone are responsible
+      for your investment decisions.
+    </p>
+    <hr class="hr" />
+    <p class="tiny">© 2026 Rupeya.ai · Pre-launch prototype</p>
+  </div>
+</footer>
+
+</body>
+</html>

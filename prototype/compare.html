@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rupeya.ai — Compare PSX stocks</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+    .nav-app a.active { color: var(--text); border-bottom: 2px solid var(--accent); padding-bottom: 16px; margin-bottom: -16px; }
+
+    .picker { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+    .pick-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; color: var(--accent); font-weight: 600; font-size: 13.5px; }
+    .pick-chip .x { color: var(--accent); cursor: pointer; opacity: .7; }
+    .pick-chip .x:hover { opacity: 1; }
+    .pick-add { padding: 8px 14px; background: var(--surface-alt); border: 1px dashed var(--border-strong); border-radius: 999px; font-size: 13.5px; color: var(--text-muted); cursor: pointer; }
+    .pick-add:hover { border-color: var(--accent); color: var(--accent); }
+
+    .compare-wrap { overflow-x: auto; margin-top: 24px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+    .ctable { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14px; }
+    .ctable th, .ctable td { padding: 14px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+    .ctable th:first-child, .ctable td:first-child { color: var(--text-muted); font-weight: 500; width: 200px; background: var(--surface-alt); position: sticky; left: 0; }
+    .ctable thead th { background: var(--bg); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+    .ctable tbody tr:hover td { background: rgba(22,199,132,0.04); }
+    .ticker-head { font-size: 18px; font-weight: 700; color: var(--text); }
+    .ticker-sub { font-size: 12px; color: var(--text-muted); font-weight: 400; margin-top: 3px; text-transform: none; letter-spacing: 0; }
+    .winner { background: var(--accent-soft) !important; }
+    .winner::after { content: " ✓"; color: var(--accent); font-weight: 700; }
+
+    .section-row td { background: var(--bg) !important; color: var(--accent) !important; font-size: 11px !important; text-transform: uppercase; letter-spacing: .08em; padding: 14px !important; font-weight: 600; }
+
+    .pillar-mini { display: flex; align-items: center; gap: 8px; }
+    .pillar-mini-bar { flex: 1; height: 5px; background: var(--surface-alt); border-radius: 999px; overflow: hidden; min-width: 40px; max-width: 80px; }
+    .pillar-mini-fill { height: 100%; background: var(--accent); }
+
+    .synth-card { padding: 28px; }
+    .synth-block { padding: 18px; background: var(--surface-alt); border-radius: 10px; border-left: 3px solid var(--accent); }
+  </style>
+</head>
+<body>
+
+<nav class="nav nav-app">
+  <div class="container nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">₨</span>
+      <span>Rupeya<span class="ai">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="stock.html">Stocks</a>
+      <a href="compare.html" class="active">Compare</a>
+      <a href="portfolio-doctor.html">Doctor</a>
+      <a href="ask-rupeya.html">Ask Rupeya</a>
+      <span class="avatar" title="Khalid">K</span>
+    </div>
+  </div>
+</nav>
+
+<section class="section-tight">
+  <div class="container">
+
+    <span class="kicker">⚖️ Compare</span>
+    <h1 class="mt-16" style="font-size: 36px;">Compare PSX stocks side-by-side</h1>
+    <p class="muted mt-8" style="max-width: 640px;">
+      Stack 2–4 stocks against each other on the same 4-pillar framework. See exactly where one
+      beats another, on which metric, and why. Best metric in each row is highlighted in green.
+    </p>
+
+    <!-- PICKER -->
+    <div class="picker mt-24">
+      <span class="tiny" style="margin-right: 8px;">COMPARING</span>
+      <span class="pick-chip">ENGRO <span class="x">×</span></span>
+      <span class="pick-chip">MEBL <span class="x">×</span></span>
+      <span class="pick-chip">PSO <span class="x">×</span></span>
+      <span class="pick-chip">FFC <span class="x">×</span></span>
+      <span class="pick-add">+ Add stock</span>
+      <span style="margin-left: auto;" class="row">
+        <span class="chip">☪ Shariah-only</span>
+        <span class="chip">⚖️ All styles</span>
+      </span>
+    </div>
+
+    <!-- COMPARISON TABLE -->
+    <div class="compare-wrap">
+      <table class="ctable">
+        <thead>
+          <tr>
+            <th></th>
+            <th>
+              <div class="ticker-head">ENGRO</div>
+              <div class="ticker-sub">Engro Corporation · Conglomerate</div>
+            </th>
+            <th>
+              <div class="ticker-head">MEBL</div>
+              <div class="ticker-sub">Meezan Bank · Islamic Banking</div>
+            </th>
+            <th>
+              <div class="ticker-head">PSO</div>
+              <div class="ticker-sub">Pakistan State Oil · OMC</div>
+            </th>
+            <th>
+              <div class="ticker-head">FFC</div>
+              <div class="ticker-sub">Fauji Fertilizer · Fertilizer</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- VERDICT & SCORE -->
+          <tr class="section-row"><td colspan="5">Verdict &amp; Score</td></tr>
+          <tr>
+            <td>Research signal</td>
+            <td><span class="badge badge-strong-buy">Strong Buy</span></td>
+            <td><span class="badge badge-strong-buy">Strong Buy</span></td>
+            <td><span class="badge badge-buy">Buy</span></td>
+            <td><span class="badge badge-buy">Buy</span></td>
+          </tr>
+          <tr>
+            <td>RupeyaScore composite</td>
+            <td>4.2 / 5</td>
+            <td class="winner">4.3 / 5</td>
+            <td>3.7 / 5</td>
+            <td>4.1 / 5</td>
+          </tr>
+          <tr>
+            <td>Style classification</td>
+            <td><span class="tag tag-both" style="margin-left: 0;">⚖️ Both</span></td>
+            <td><span class="tag tag-both" style="margin-left: 0;">⚖️ Both</span></td>
+            <td><span class="tag tag-dividend" style="margin-left: 0;">💰 Dividend</span></td>
+            <td><span class="tag tag-dividend" style="margin-left: 0;">💰 Dividend</span></td>
+          </tr>
+          <tr>
+            <td>Shariah-compliant?</td>
+            <td><span class="dot dot-good"></span> Yes</td>
+            <td><span class="dot dot-good"></span> Yes</td>
+            <td><span class="dot dot-good"></span> Yes</td>
+            <td><span class="dot dot-good"></span> Yes</td>
+          </tr>
+          <tr>
+            <td>Pillar · Business Quality</td>
+            <td><span class="pillar-mini">4.1 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 82%;"></span></span></span></td>
+            <td class="winner"><span class="pillar-mini">4.4 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 88%;"></span></span></span></td>
+            <td><span class="pillar-mini">3.6 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 72%;"></span></span></span></td>
+            <td><span class="pillar-mini">4.0 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 80%;"></span></span></span></td>
+          </tr>
+          <tr>
+            <td>Pillar · Financial Health</td>
+            <td><span class="pillar-mini">4.0 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 80%;"></span></span></span></td>
+            <td class="winner"><span class="pillar-mini">4.5 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 90%;"></span></span></span></td>
+            <td><span class="pillar-mini">3.4 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 68%;"></span></span></span></td>
+            <td><span class="pillar-mini">4.2 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 84%;"></span></span></span></td>
+          </tr>
+          <tr>
+            <td>Pillar · Valuation</td>
+            <td><span class="pillar-mini">4.5 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 90%;"></span></span></span></td>
+            <td><span class="pillar-mini">3.8 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 76%;"></span></span></span></td>
+            <td class="winner"><span class="pillar-mini">4.6 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 92%;"></span></span></span></td>
+            <td><span class="pillar-mini">4.0 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 80%;"></span></span></span></td>
+          </tr>
+          <tr>
+            <td>Pillar · Catalysts</td>
+            <td><span class="pillar-mini">4.0 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 80%;"></span></span></span></td>
+            <td class="winner"><span class="pillar-mini">4.3 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 86%;"></span></span></span></td>
+            <td><span class="pillar-mini">3.5 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 70%;"></span></span></span></td>
+            <td><span class="pillar-mini">4.1 <span class="pillar-mini-bar"><span class="pillar-mini-fill" style="width: 82%;"></span></span></span></td>
+          </tr>
+
+          <!-- VALUATION -->
+          <tr class="section-row"><td colspan="5">Valuation</td></tr>
+          <tr><td>Current price (PKR)</td><td>295.40</td><td>208.10</td><td>240.80</td><td>147.20</td></tr>
+          <tr><td>Intrinsic value (PKR)</td><td>387</td><td>248</td><td class="winner">312</td><td>175</td></tr>
+          <tr><td>Margin of safety</td><td>+24%</td><td>+16%</td><td class="winner">+23%</td><td>+16%</td></tr>
+          <tr><td>P/E (TTM)</td><td>6.2x</td><td>7.4x</td><td class="winner">4.8x</td><td>5.6x</td></tr>
+          <tr><td>P/E vs 5Y avg</td><td>−26%</td><td>−12%</td><td class="winner">−33%</td><td>−18%</td></tr>
+          <tr><td>EV / EBITDA</td><td>3.9x</td><td>n/a (bank)</td><td class="winner">3.2x</td><td>4.1x</td></tr>
+
+          <!-- QUALITY & RETURNS -->
+          <tr class="section-row"><td colspan="5">Quality &amp; Returns</td></tr>
+          <tr><td>Revenue 5Y CAGR</td><td>14.2%</td><td class="winner">22.8%</td><td>11.4%</td><td>9.6%</td></tr>
+          <tr><td>EPS 5Y CAGR</td><td>12.8%</td><td class="winner">28.4%</td><td>10.2%</td><td>8.1%</td></tr>
+          <tr><td>ROE (5Y avg)</td><td>19.6%</td><td class="winner">28.5%</td><td>16.2%</td><td>22.4%</td></tr>
+          <tr><td>ROIC (latest)</td><td>15.3%</td><td class="winner">21.1%</td><td>11.6%</td><td>17.8%</td></tr>
+          <tr><td>FCF / Net Income</td><td>94%</td><td>n/a (bank)</td><td>71%</td><td class="winner">98%</td></tr>
+
+          <!-- INCOME -->
+          <tr class="section-row"><td colspan="5">Income</td></tr>
+          <tr><td>Forward dividend yield</td><td>8.1%</td><td>6.8%</td><td class="winner">9.2%</td><td>8.4%</td></tr>
+          <tr><td>5Y avg payout ratio</td><td>50%</td><td>40%</td><td>62%</td><td class="winner">85%</td></tr>
+          <tr><td>5Y dividend growth</td><td>11.2%</td><td class="winner">18.6%</td><td>6.4%</td><td>5.9%</td></tr>
+          <tr><td>Dividend streak</td><td>10+ yrs</td><td>9 yrs</td><td>10+ yrs</td><td class="winner">25+ yrs</td></tr>
+
+          <!-- RISK -->
+          <tr class="section-row"><td colspan="5">Risk</td></tr>
+          <tr><td>Debt / Equity</td><td class="winner">0.6x</td><td>n/a (bank)</td><td>1.4x</td><td>0.7x</td></tr>
+          <tr><td>Interest coverage</td><td>6.4x</td><td>n/a (bank)</td><td>3.8x</td><td class="winner">9.1x</td></tr>
+          <tr><td>Earnings volatility</td><td class="winner">0.18</td><td>0.22</td><td>0.46</td><td>0.21</td></tr>
+          <tr><td>Macro flags</td><td>None major</td><td class="winner">None major</td><td>⚠️ Circular debt HIGH</td><td>⚠️ Gas-pricing risk</td></tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- AI SYNTHESIS -->
+    <div class="card synth-card mt-32">
+      <div class="row" style="gap: 12px;">
+        <span class="logo-mark">₨</span>
+        <h3>Rupeya's take</h3>
+        <span class="chip">AI synthesis · 4 stocks</span>
+      </div>
+
+      <div class="synth-block mt-16">
+        <p style="line-height: 1.85;">
+          <strong style="color: var(--text);">If you can only pick one: ENGRO.</strong> It scores 4.2 across the board with no major weakness, has the second-largest margin of safety (+24%), and pays a healthy 8.1% yield while still growing earnings at double-digit rates. It's the textbook ⚖️ Both — a long-duration compounder that also writes cheques to shareholders. Best fit for a "balanced" investor profile.
+        </p>
+      </div>
+
+      <p class="mt-16" style="line-height: 1.85;">
+        <strong style="color: var(--text);">If you want maximum quality and growth: MEBL.</strong> Meezan Bank wins 5 of the 10 quality &amp; growth metrics — highest ROE (28.5%), highest EPS growth (28.4%), best dividend growth (18.6%). It is structurally privileged in Pakistan's Islamic banking shift. The trade-off: smallest margin of safety (+16%) of the four. Pay full price for the best business.
+      </p>
+
+      <p class="mt-16" style="line-height: 1.85;">
+        <strong style="color: var(--text);">If you want pure income with some risk: PSO.</strong> Highest yield (9.2%), cheapest valuation (P/E 4.8x, EV/EBITDA 3.2x), and the largest discount to its own 5-year average. The catch is real — circular debt exposure is HIGH and earnings volatility (0.46) is materially worse than peers. A 10–11% position cap is appropriate; not a core holding for risk-averse investors.
+      </p>
+
+      <p class="mt-16" style="line-height: 1.85;">
+        <strong style="color: var(--text);">If you want a sleep-well dividend: FFC.</strong> 25+ year dividend streak, 85% payout, FCF coverage of 98%, lowest earnings volatility of the income-focused names. EPS growth is the slowest of the four (8.1%) — you're trading growth for predictability. A natural fit for retirees.
+      </p>
+
+      <hr class="hr" />
+
+      <p class="tiny">
+        <strong style="color: var(--text-muted);">Methodology:</strong> Composite RupeyaScore is a weighted average of Business Quality (30%), Financial Health (30%), Valuation (25%), Catalysts (15%). Intrinsic value via two-stage DCF with KIBOR + 7% equity risk premium. Shariah status from KMI All-Share Index May 2026. Data refreshed today 7:18 PM.
+      </p>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="row mt-32" style="gap: 12px; flex-wrap: wrap;">
+      <button class="btn btn-primary">+ Add winner to my portfolio</button>
+      <a href="ask-rupeya.html" class="btn btn-soft">💬 Ask Rupeya about this comparison</a>
+      <button class="btn btn-ghost">📄 Download PDF report</button>
+      <button class="btn btn-ghost">🔗 Share comparison</button>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p class="disclaimer">
+      <strong>Important:</strong> Rupeya.ai is an educational research tool, not a SECP-licensed
+      investment advisor. Comparisons shown are research signals generated by AI, not buy/sell
+      recommendations. Consult a SECP-registered advisor before acting.
+    </p>
+    <hr class="hr" />
+    <p class="tiny">© 2026 Rupeya.ai · Pre-launch prototype</p>
+  </div>
+</footer>
+
+</body>
+</html>

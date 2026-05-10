@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rupeya.ai — Tell us about you</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .quiz-wrap { max-width: 640px; margin: 0 auto; padding: 48px 24px; }
+    .quiz-step { display: none; }
+    .quiz-step.active { display: block; }
+    .qnum { font-size: 13px; color: var(--text-muted); letter-spacing: .08em; text-transform: uppercase; }
+    .options { display: grid; gap: 10px; margin-top: 24px; }
+    .quiz-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; }
+    .help-link { display: inline-block; margin-top: 12px; font-size: 13px; color: var(--accent); cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">₨</span>
+      <span>Rupeya<span class="ai">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Exit</a>
+    </div>
+  </div>
+</nav>
+
+<div class="quiz-wrap">
+  <div class="row between">
+    <span class="qnum"><span id="curStep">1</span> of 9</span>
+    <span class="tiny">~3 minutes</span>
+  </div>
+  <div class="progress mt-8"><div class="progress-bar" id="progressBar" style="width: 11%;"></div></div>
+
+  <!-- STEP 1 -->
+  <div class="quiz-step active" data-step="1">
+    <h2 class="mt-24">What is your investment horizon?</h2>
+    <p class="muted mt-8">How long can you keep this money invested before you'd need it back?</p>
+    <div class="options">
+      <label class="option">Less than 1 year</label>
+      <label class="option">1–3 years</label>
+      <label class="option">3–5 years</label>
+      <label class="option selected">5–10 years</label>
+      <label class="option">More than 10 years</label>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="quiz-step" data-step="2">
+    <h2 class="mt-24">If your portfolio fell 30% in 6 months, what would you do?</h2>
+    <p class="muted mt-8">There are no wrong answers — we use this to size your risk.</p>
+    <div class="options">
+      <label class="option">Sell everything immediately</label>
+      <label class="option">Sell some to limit further losses</label>
+      <label class="option selected">Hold and wait it out</label>
+      <label class="option">Buy more at lower prices</label>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="quiz-step" data-step="3">
+    <h2 class="mt-24">Lump sum or monthly SIP?</h2>
+    <p class="muted mt-8">How will you actually fund this portfolio?</p>
+    <div class="options">
+      <label class="option">Lump sum only</label>
+      <label class="option">Monthly SIP only</label>
+      <label class="option selected">Both — a starting amount and monthly additions</label>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="quiz-step" data-step="4">
+    <h2 class="mt-24">Approximate portfolio size today?</h2>
+    <p class="muted mt-8">Including any cash you plan to deploy soon.</p>
+    <div class="options">
+      <label class="option">Less than PKR 50,000</label>
+      <label class="option selected">PKR 50,000 – 200,000</label>
+      <label class="option">PKR 200,000 – 1,000,000</label>
+      <label class="option">PKR 1M – 5M</label>
+      <label class="option">More than PKR 5M</label>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="quiz-step" data-step="5">
+    <h2 class="mt-24">How much can you invest each month?</h2>
+    <div class="options">
+      <label class="option">Less than PKR 5,000</label>
+      <label class="option selected">PKR 5,000 – 25,000</label>
+      <label class="option">PKR 25,000 – 100,000</label>
+      <label class="option">More than PKR 100,000</label>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="quiz-step" data-step="6">
+    <h2 class="mt-24">Do you prefer dividend income or capital growth?</h2>
+    <p class="muted mt-8">This shapes which kind of PSX companies we pick for you.</p>
+    <div class="options">
+      <label class="option">Dividend income (quarterly cash payouts)</label>
+      <label class="option">Capital growth (price appreciation over time)</label>
+      <label class="option selected">A balance of both</label>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="quiz-step" data-step="7">
+    <h2 class="mt-24">Your PSX experience?</h2>
+    <div class="options">
+      <label class="option selected">First time — never invested before</label>
+      <label class="option">1–2 years of investing</label>
+      <label class="option">3+ years of investing</label>
+    </div>
+  </div>
+
+  <!-- STEP 8 — SHARIAH (NEW) -->
+  <div class="quiz-step" data-step="8">
+    <span class="chip chip-accent">Faith preference</span>
+    <h2 class="mt-16">Do you want only Shariah-compliant stocks?</h2>
+    <p class="muted mt-8">If yes, Rupeya will only ever recommend stocks from the KMI All-Share universe — companies that pass AAOIFI Shariah-compliance ratios and avoid prohibited business activities (riba, conventional banking, alcohol, gambling, tobacco, conventional insurance).</p>
+    <div class="options">
+      <label class="option selected">Yes — only Shariah-compliant stocks</label>
+      <label class="option">No — all PSX stocks are fine</label>
+      <label class="option">I'm not sure — explain it to me first</label>
+    </div>
+    <p class="tiny mt-16">You can change this anytime in Settings. Your entire portfolio &amp; recommendations will respect this filter.</p>
+  </div>
+
+  <!-- STEP 9 — GOAL -->
+  <div class="quiz-step" data-step="9">
+    <h2 class="mt-24">In one line — what's the goal of this money?</h2>
+    <p class="muted mt-8">We'll personalize the tone of your reports based on this.</p>
+    <textarea class="textarea mt-16" placeholder="e.g., House down-payment in 8 years. Or: Build retirement income.">House down-payment in 8 years</textarea>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="quiz-actions">
+    <button class="btn btn-ghost" id="backBtn">← Back</button>
+    <button class="btn btn-primary" id="nextBtn">Next →</button>
+  </div>
+
+  <!-- STEP 10 — PROFILE SUMMARY -->
+  <div class="quiz-step" data-step="10">
+    <span class="chip chip-accent" style="margin-top: 8px;">✓ Profile complete</span>
+    <h2 class="mt-16">Here's how Rupeya sees you</h2>
+    <p class="muted mt-8">We'll use this to build your portfolio. You can update it anytime.</p>
+
+    <div class="card mt-24">
+      <div class="grid-2" style="gap: 14px;">
+        <div><div class="tiny">Horizon</div><div style="font-weight: 600; margin-top: 4px;">5–10 years</div></div>
+        <div><div class="tiny">Risk profile</div><div style="font-weight: 600; margin-top: 4px;">Balanced (62/100)</div></div>
+        <div><div class="tiny">Funding style</div><div style="font-weight: 600; margin-top: 4px;">Lump sum + Monthly SIP</div></div>
+        <div><div class="tiny">Starting capital</div><div style="font-weight: 600; margin-top: 4px;">PKR 100,000</div></div>
+        <div><div class="tiny">Monthly SIP</div><div style="font-weight: 600; margin-top: 4px;">PKR 15,000</div></div>
+        <div><div class="tiny">Income vs growth</div><div style="font-weight: 600; margin-top: 4px;">Balanced</div></div>
+        <div><div class="tiny">Experience</div><div style="font-weight: 600; margin-top: 4px;">Beginner</div></div>
+        <div><div class="tiny">Faith filter</div><div style="font-weight: 600; margin-top: 4px; color: var(--accent);">Shariah-compliant only</div></div>
+        <div style="grid-column: 1 / -1;"><div class="tiny">Goal</div><div style="font-weight: 600; margin-top: 4px;">House down-payment in 8 years</div></div>
+      </div>
+    </div>
+
+    <a href="portfolio-builder.html" class="btn btn-primary btn-lg mt-24" style="width: 100%;">Build my portfolio →</a>
+    <p class="tiny center mt-16">Takes about 20 seconds. We'll explain every pick.</p>
+  </div>
+</div>
+
+<script>
+  const total = 9;
+  let cur = 1;
+  const bar = document.getElementById('progressBar');
+  const num = document.getElementById('curStep');
+  const next = document.getElementById('nextBtn');
+  const back = document.getElementById('backBtn');
+  const actions = document.querySelector('.quiz-actions');
+
+  function show(n) {
+    document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+    document.querySelector('.quiz-step[data-step="' + n + '"]').classList.add('active');
+    if (n <= total) {
+      bar.style.width = (n / total * 100) + '%';
+      num.textContent = n;
+      actions.style.display = 'flex';
+      next.textContent = (n === total) ? 'See my profile →' : 'Next →';
+      back.style.visibility = (n === 1) ? 'hidden' : 'visible';
+    } else {
+      bar.style.width = '100%';
+      num.textContent = total;
+      actions.style.display = 'none';
+    }
+  }
+  next.addEventListener('click', () => { if (cur < total + 1) { cur++; show(cur); } });
+  back.addEventListener('click', () => { if (cur > 1) { cur--; show(cur); } });
+
+  document.querySelectorAll('.options').forEach(group => {
+    group.addEventListener('click', e => {
+      const opt = e.target.closest('.option');
+      if (!opt) return;
+      group.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+    });
+  });
+
+  show(1);
+</script>
+
+</body>
+</html>

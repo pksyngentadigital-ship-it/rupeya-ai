@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rupeya.ai — Your portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    @media (max-width: 800px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+    .stat-card { padding: 18px; }
+    .stat-num { font-size: 26px; font-weight: 700; letter-spacing: -.01em; }
+    .pie { width: 220px; height: 220px; }
+    .legend { display: grid; gap: 8px; }
+    .legend-row { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+    .legend-swatch { width: 12px; height: 12px; border-radius: 3px; }
+    .stock-row { display: grid; grid-template-columns: 80px 1fr 90px 110px 120px; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .stock-row:last-child { border-bottom: 0; }
+    .ticker { font-weight: 700; }
+    .weight-bar { height: 6px; background: var(--surface-alt); border-radius: 999px; overflow: hidden; }
+    .weight-fill { height: 100%; background: var(--accent); }
+    @media (max-width: 700px) { .stock-row { grid-template-columns: 70px 1fr 70px; } .stock-row .hide-sm { display:none; } }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">₨</span>
+      <span>Rupeya<span class="ai">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="dashboard.html">Skip to dashboard</a>
+      <a class="btn btn-soft" href="#">Save portfolio</a>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <div class="row" style="gap: 8px; flex-wrap: wrap;">
+      <span class="chip chip-accent">✓ Built for your profile</span>
+      <span class="chip chip-accent">☪ Shariah-compliant only</span>
+    </div>
+    <h1 class="mt-16" style="font-size: 40px;">Your Rupeya portfolio</h1>
+    <p class="muted mt-8" style="max-width: 640px;">
+      A balanced 9-stock long-term portfolio for a beginner with a 5–10 year horizon, PKR 100,000 starter
+      and PKR 15,000 monthly SIP, drawn from the KMI All-Share Shariah-compliant universe and screened
+      for a 25%+ margin of safety.
+    </p>
+
+    <!-- KEY STATS -->
+    <div class="stat-grid mt-32">
+      <div class="card stat-card">
+        <div class="tiny">Holdings</div>
+        <div class="stat-num mt-8">9 stocks</div>
+        <div class="tiny mt-8">Across 5 sectors</div>
+      </div>
+      <div class="card stat-card">
+        <div class="tiny">Expected dividend yield</div>
+        <div class="stat-num mt-8" style="color: var(--accent);">7.4%</div>
+        <div class="tiny mt-8">Forward 12-month estimate</div>
+      </div>
+      <div class="card stat-card">
+        <div class="tiny">Avg margin of safety</div>
+        <div class="stat-num mt-8">28%</div>
+        <div class="tiny mt-8">Discount to intrinsic value</div>
+      </div>
+      <div class="card stat-card">
+        <div class="tiny">Avg Rupeya Score</div>
+        <div class="stat-num mt-8">4.0 <span class="muted" style="font-size: 14px;">/ 5</span></div>
+        <div class="tiny mt-8">Composite quality + value</div>
+      </div>
+    </div>
+
+    <!-- ALLOCATION -->
+    <div class="card mt-32" style="padding: 28px;">
+      <div class="row between wrap">
+        <div>
+          <h3>Sector allocation</h3>
+          <p class="muted" style="font-size: 14px;">Diversified across 5 PSX sectors. No single sector exceeds 25%.</p>
+        </div>
+        <span class="chip">Risk profile · Balanced</span>
+      </div>
+
+      <div class="row mt-24" style="gap: 40px; flex-wrap: wrap;">
+        <!-- Pie (SVG conic-gradient style via SVG) -->
+        <svg class="pie" viewBox="0 0 32 32" aria-label="Sector allocation chart">
+          <!-- 9 segments roughly: Banks 22, Fertilizer 18, Cement 16, OMC 15, Power 12, Food 7, Tech 5, Pharma 3, Cash 2 -->
+          <circle r="16" cx="16" cy="16" fill="#16C784" />
+          <circle r="16" cx="16" cy="16" fill="transparent"
+                  stroke="#0AA66C" stroke-width="32"
+                  stroke-dasharray="22 100" transform="rotate(-90 16 16)"/>
+          <circle r="16" cx="16" cy="16" fill="transparent"
+                  stroke="#4F8DF7" stroke-width="32"
+                  stroke-dasharray="18 100" stroke-dashoffset="-22" transform="rotate(-90 16 16)"/>
+          <circle r="16" cx="16" cy="16" fill="transparent"
+                  stroke="#F0B72F" stroke-width="32"
+                  stroke-dasharray="16 100" stroke-dashoffset="-40" transform="rotate(-90 16 16)"/>
+          <circle r="16" cx="16" cy="16" fill="transparent"
+                  stroke="#A66BFF" stroke-width="32"
+                  stroke-dasharray="15 100" stroke-dashoffset="-56" transform="rotate(-90 16 16)"/>
+          <circle r="16" cx="16" cy="16" fill="transparent"
+                  stroke="#EA3943" stroke-width="32"
+                  stroke-dasharray="12 100" stroke-dashoffset="-71" transform="rotate(-90 16 16)"/>
+          <circle r="8" cx="16" cy="16" fill="#0B0F14" />
+        </svg>
+
+        <div class="legend">
+          <div class="legend-row"><span class="legend-swatch" style="background: #0AA66C;"></span> Islamic Banks · 22%</div>
+          <div class="legend-row"><span class="legend-swatch" style="background: #4F8DF7;"></span> Fertilizer · 28%</div>
+          <div class="legend-row"><span class="legend-swatch" style="background: #F0B72F;"></span> Cement · 16%</div>
+          <div class="legend-row"><span class="legend-swatch" style="background: #A66BFF;"></span> Oil &amp; Gas Marketing · 15%</div>
+          <div class="legend-row"><span class="legend-swatch" style="background: #EA3943;"></span> Power · 12%</div>
+          <div class="legend-row"><span class="legend-swatch" style="background: #16C784;"></span> Food · 7%</div>
+          <div class="legend-row"><span class="legend-swatch" style="background: #2A3850;"></span> Tech · 5%</div>
+          <div class="legend-row"><span class="legend-swatch" style="background: #1F2A3A;"></span> Pharma · 3%</div>
+          <div class="legend-row"><span class="legend-swatch" style="background: #121821;"></span> Cash buffer · 2%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOLDINGS -->
+    <div class="card mt-24" style="padding: 28px;">
+      <div class="row between wrap">
+        <h3>Your holdings · 9 stocks</h3>
+        <span class="tiny">Click any row to see Rupeya's full analysis →</span>
+      </div>
+
+      <div class="mt-16">
+        <div class="stock-row" style="border-bottom: 1px solid var(--border-strong); padding-bottom: 8px;">
+          <span class="tiny">TICKER</span>
+          <span class="tiny">NAME · SECTOR</span>
+          <span class="tiny">WEIGHT</span>
+          <span class="tiny hide-sm">SCORE</span>
+          <span class="tiny hide-sm">VERDICT</span>
+        </div>
+
+        <a href="stock.html" class="stock-row" style="text-decoration: none;">
+          <span class="ticker">ENGRO</span>
+          <div><div>Engro Corporation <span class="tag tag-both">⚖️ Both</span></div><div class="tiny">Conglomerate · Fertilizer</div></div>
+          <div><div>13%</div><div class="weight-bar mt-8"><div class="weight-fill" style="width: 65%;"></div></div></div>
+          <span class="hide-sm">4.2</span>
+          <span class="hide-sm"><span class="badge badge-strong-buy">Strong Buy</span></span>
+        </a>
+
+        <a href="stock.html" class="stock-row" style="text-decoration: none;">
+          <span class="ticker">MEBL</span>
+          <div><div>Meezan Bank <span class="tag tag-both">⚖️ Both</span></div><div class="tiny">Islamic Banking</div></div>
+          <div><div>12%</div><div class="weight-bar mt-8"><div class="weight-fill" style="width: 60%;"></div></div></div>
+          <span class="hide-sm">4.3</span>
+          <span class="hide-sm"><span class="badge badge-strong-buy">Strong Buy</span></span>
+        </a>
+
+        <a href="stock.html" class="stock-row" style="text-decoration: none;">
+          <span class="ticker">FFC</span>
+          <div><div>Fauji Fertilizer <span class="tag tag-dividend">💰 Dividend</span></div><div class="tiny">Fertilizer</div></div>
+          <div><div>12%</div><div class="weight-bar mt-8"><div class="weight-fill" style="width: 60%;"></div></div></div>
+          <span class="hide-sm">4.1</span>
+          <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+        </a>
+
+        <a href="stock.html" class="stock-row" style="text-decoration: none;">
+          <span class="ticker">LUCK</span>
+          <div><div>Lucky Cement <span class="tag tag-both">⚖️ Both</span></div><div class="tiny">Cement</div></div>
+          <div><div>11%</div><div class="weight-bar mt-8"><div class="weight-fill" style="width: 55%;"></div></div></div>
+          <span class="hide-sm">3.9</span>
+          <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+        </a>
+
+        <a href="stock.html" class="stock-row" style="text-decoration: none;">
+          <span class="ticker">PSO</span>
+          <div><div>Pakistan State Oil <span class="tag tag-dividend">💰 Dividend</span></div><div class="tiny">Oil & Gas Marketing</div></div>
+          <div><div>11%</div><div class="weight-bar mt-8"><div class="weight-fill" style="width: 55%;"></div></div></div>
+          <span class="hide-sm">3.8</span>
+          <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+        </a>
+
+        <a href="stock.html" class="stock-row" style="text-decoration: none;">
+          <span class="ticker">EFERT</span>
+          <div><div>Engro Fertilizers <span class="tag tag-dividend">💰 Dividend</span></div><div class="tiny">Fertilizer</div></div>
+          <div><div>10%</div><div class="weight-bar mt-8"><div class="weight-fill" style="width: 50%;"></div></div></div>
+          <span class="hide-sm">4.0</span>
+          <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+        </a>
+
+        <a href="stock.html" class="stock-row" style="text-decoration: none;">
+          <span class="ticker">HUBC</span>
+          <div><div>Hub Power <span class="tag tag-dividend">💰 Dividend</span></div><div class="tiny">Power</div></div>
+          <div><div>10%</div><div class="weight-bar mt-8"><div class="weight-fill" style="width: 50%;"></div></div></div>
+          <span class="hide-sm">3.7</span>
+          <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+        </a>
+
+        <a href="stock.html" class="stock-row" style="text-decoration: none;">
+          <span class="ticker">NESTLE</span>
+          <div><div>Nestle Pakistan <span class="tag tag-growth">🚀 Growth</span></div><div class="tiny">Food</div></div>
+          <div><div>7%</div><div class="weight-bar mt-8"><div class="weight-fill" style="width: 35%;"></div></div></div>
+          <span class="hide-sm">4.3</span>
+          <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+        </a>
+
+        <a href="stock.html" class="stock-row" style="text-decoration: none;">
+          <span class="ticker">SYS</span>
+          <div><div>Systems Limited <span class="tag tag-growth">🚀 Growth</span></div><div class="tiny">Tech</div></div>
+          <div><div>5%</div><div class="weight-bar mt-8"><div class="weight-fill" style="width: 25%;"></div></div></div>
+          <span class="hide-sm">3.9</span>
+          <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+        </a>
+      </div>
+    </div>
+
+    <!-- AI NARRATIVE -->
+    <div class="card mt-24" style="padding: 28px;">
+      <h3>Why these stocks · AI summary</h3>
+      <p class="muted mt-16" style="line-height: 1.8;">
+        Your portfolio is built around three ideas. <strong style="color: var(--text);">First,</strong> long-duration
+        Pakistani compounders — Engro, MCB, Nestle, FFC — that have generated double-digit ROE for over a decade and
+        return cash through dividends rather than re-leveraging. <strong style="color: var(--text);">Second,</strong>
+        a deliberate tilt toward sectors that benefit from inflation (cement, fertilizer, OMCs) which historically
+        outperform in PKR-weak environments. <strong style="color: var(--text);">Third,</strong> a small position in
+        Systems Limited as a USD-revenue hedge — Pakistan tech exporters earn dollars and pay rupees, a structural
+        advantage for the next decade. We deliberately avoided high-leverage cyclicals and any name with audit
+        qualifications in the latest annual report.
+      </p>
+      <p class="tiny mt-16">Sources: PSX filings · Latest quarterly results · Mettis Global · Business Recorder</p>
+    </div>
+
+    <div class="row mt-32" style="justify-content: center;">
+      <a href="dashboard.html" class="btn btn-primary btn-lg">Save & open dashboard →</a>
+      <a href="portfolio-builder.html" class="btn btn-ghost btn-lg">Tweak my profile</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p class="disclaimer">
+      <strong>Important:</strong> Rupeya.ai is an educational research tool, not a SECP-licensed
+      investment advisor. Verdicts shown are research signals, not buy/sell orders. You alone are
+      responsible for your trades.
+    </p>
+    <hr class="hr" />
+    <p class="tiny">© 2026 Rupeya.ai · Pre-launch prototype</p>
+  </div>
+</footer>
+
+</body>
+</html>

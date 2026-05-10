@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rupeya.ai — Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .nav-app a.active { color: var(--text); border-bottom: 2px solid var(--accent); padding-bottom: 16px; margin-bottom: -16px; }
+    .nav-app .nav-links a { padding: 4px 0; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+    .health-num { font-size: 64px; font-weight: 700; letter-spacing: -.02em; line-height: 1; }
+    .ring { position: relative; width: 140px; height: 140px; }
+    .ring svg { transform: rotate(-90deg); }
+    .ring-text { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+    .insight-card { padding: 18px; }
+    .insight-icon { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font-size: 16px; }
+    .col-main { display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px; }
+    @media (max-width: 900px) { .col-main { grid-template-columns: 1fr; } }
+    .holding-row { display: grid; grid-template-columns: 80px 1fr 90px 90px 110px; gap: 10px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .holding-row:last-child { border-bottom: 0; }
+    .pl-pos { color: var(--accent); }
+    .pl-neg { color: var(--danger); }
+    @media (max-width: 700px) { .holding-row { grid-template-columns: 70px 1fr 80px; } .holding-row .hide-sm { display: none; } }
+  </style>
+</head>
+<body>
+
+<!-- IN-APP NAV -->
+<nav class="nav nav-app">
+  <div class="container nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">₨</span>
+      <span>Rupeya<span class="ai">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="stock.html">Stocks</a>
+      <a href="compare.html">Compare</a>
+      <a href="portfolio-doctor.html">Doctor</a>
+      <a href="ask-rupeya.html">Ask Rupeya</a>
+      <span class="avatar" title="Khalid">K</span>
+    </div>
+  </div>
+</nav>
+
+<!-- GREETING STRIP -->
+<section style="border-bottom: 1px solid var(--border); background: var(--surface);">
+  <div class="container row between" style="padding: 18px 24px; flex-wrap: wrap; gap: 12px;">
+    <div>
+      <h3 style="font-size: 18px; font-weight: 600;">Good evening, Khalid 👋</h3>
+      <p class="tiny mt-8">Markets closed · KSE-100 <span class="pl-pos">+1.2%</span> · Last update 4:15 PM PKT</p>
+    </div>
+    <div class="row" style="gap: 8px;">
+      <span class="chip">☪ Shariah-compliant</span>
+      <span class="chip">Balanced profile</span>
+    </div>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container">
+
+    <!-- PORTFOLIO HEALTH (full width) -->
+    <div class="card card-hl" style="padding: 28px;">
+      <div class="row between wrap" style="gap: 24px;">
+        <div class="row" style="gap: 24px;">
+          <div class="ring">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="60" stroke="#1F2A3A" stroke-width="12" fill="none" />
+              <circle cx="70" cy="70" r="60" stroke="#16C784" stroke-width="12" fill="none"
+                      stroke-dasharray="377" stroke-dashoffset="83"
+                      stroke-linecap="round" />
+            </svg>
+            <div class="ring-text">
+              <div>
+                <div class="health-num" style="font-size: 36px;">78</div>
+                <div class="tiny">/ 100</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="tiny">Portfolio Health</div>
+            <h2 style="margin-top: 6px;">Healthy &amp; on track</h2>
+            <p class="muted mt-8" style="max-width: 520px;">
+              Your 9-stock portfolio is well-diversified with a strong margin of safety.
+              One holding (Hubco) is approaching trim territory; the rest remain in BUY or HOLD.
+            </p>
+          </div>
+        </div>
+        <div class="col" style="gap: 8px; min-width: 180px;">
+          <div class="row between"><span class="tiny">Total value</span><span style="font-weight: 600;">PKR 1,18,420</span></div>
+          <div class="row between"><span class="tiny">Total return</span><span class="pl-pos" style="font-weight: 600;">+18.4%</span></div>
+          <div class="row between"><span class="tiny">Forward div yield</span><span style="font-weight: 600;">7.4%</span></div>
+          <div class="row between"><span class="tiny">Risk score</span><span style="font-weight: 600;">5.2 / 10</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODAY'S INSIGHTS -->
+    <h3 class="mt-32 mb-16">Today's insights</h3>
+    <div class="grid-3">
+      <div class="card insight-card">
+        <div class="insight-icon" style="background: var(--accent-soft); color: var(--accent);">💰</div>
+        <h4 class="mt-16">Dividend incoming</h4>
+        <p class="muted mt-8" style="font-size: 14px;">FFC declared PKR 5.0/share interim dividend. Payable to your 80 shares: <strong style="color: var(--text);">PKR 400</strong>, ex-date 22 May.</p>
+        <a class="muted tiny mt-16" style="display: inline-block;" href="stock.html">View FFC →</a>
+      </div>
+      <div class="card insight-card">
+        <div class="insight-icon" style="background: #1E2A3D; color: var(--info);">📊</div>
+        <h4 class="mt-16">Score change · MEBL</h4>
+        <p class="muted mt-8" style="font-size: 14px;">Meezan Bank's RupeyaScore moved from 4.1 → 4.3 after Q1 results. Strong deposits growth and expanded ROE.</p>
+        <a class="muted tiny mt-16" style="display: inline-block;" href="stock.html">Read memo →</a>
+      </div>
+      <div class="card insight-card">
+        <div class="insight-icon" style="background: #3A2D14; color: var(--warn);">⚠️</div>
+        <h4 class="mt-16">Watch · HUBC</h4>
+        <p class="muted mt-8" style="font-size: 14px;">Price approaching intrinsic value. If it crosses PKR 165, Rupeya will suggest trimming half the position.</p>
+        <a class="muted tiny mt-16" style="display: inline-block;" href="stock.html">View thresholds →</a>
+      </div>
+    </div>
+
+    <!-- TWO COLUMN -->
+    <div class="col-main mt-32">
+
+      <!-- HOLDINGS -->
+      <div class="card" style="padding: 24px;">
+        <div class="row between">
+          <h3>Your holdings</h3>
+          <a href="portfolio-doctor.html" class="muted tiny">Run Portfolio Doctor →</a>
+        </div>
+
+        <div class="mt-16">
+          <div class="holding-row" style="border-bottom: 1px solid var(--border-strong); padding-bottom: 8px;">
+            <span class="tiny">TICKER</span>
+            <span class="tiny">NAME</span>
+            <span class="tiny">PRICE</span>
+            <span class="tiny hide-sm">P/L</span>
+            <span class="tiny hide-sm">VERDICT</span>
+          </div>
+
+          <a href="stock.html" class="holding-row" style="text-decoration: none;">
+            <span style="font-weight: 700;">ENGRO</span>
+            <div><div>Engro Corp <span class="tag tag-both">⚖️ Both</span></div><div class="tiny">13% weight</div></div>
+            <div><div>295.40</div><div class="tiny pl-pos">+0.8%</div></div>
+            <span class="hide-sm pl-pos">+22%</span>
+            <span class="hide-sm"><span class="badge badge-strong-buy">Strong Buy</span></span>
+          </a>
+
+          <a href="stock.html" class="holding-row" style="text-decoration: none;">
+            <span style="font-weight: 700;">MEBL</span>
+            <div><div>Meezan Bank <span class="tag tag-both">⚖️ Both</span></div><div class="tiny">12% weight</div></div>
+            <div><div>208.10</div><div class="tiny pl-pos">+1.4%</div></div>
+            <span class="hide-sm pl-pos">+31%</span>
+            <span class="hide-sm"><span class="badge badge-strong-buy">Strong Buy</span></span>
+          </a>
+
+          <a href="stock.html" class="holding-row" style="text-decoration: none;">
+            <span style="font-weight: 700;">FFC</span>
+            <div><div>Fauji Fertilizer <span class="tag tag-dividend">💰 Dividend</span></div><div class="tiny">12% weight</div></div>
+            <div><div>147.20</div><div class="tiny pl-neg">−0.3%</div></div>
+            <span class="hide-sm pl-pos">+15%</span>
+            <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+          </a>
+
+          <a href="stock.html" class="holding-row" style="text-decoration: none;">
+            <span style="font-weight: 700;">LUCK</span>
+            <div><div>Lucky Cement <span class="tag tag-both">⚖️ Both</span></div><div class="tiny">11% weight</div></div>
+            <div><div>682.50</div><div class="tiny pl-pos">+2.1%</div></div>
+            <span class="hide-sm pl-pos">+19%</span>
+            <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+          </a>
+
+          <a href="stock.html" class="holding-row" style="text-decoration: none;">
+            <span style="font-weight: 700;">PSO</span>
+            <div><div>Pakistan State Oil <span class="tag tag-dividend">💰 Dividend</span></div><div class="tiny">11% weight</div></div>
+            <div><div>240.80</div><div class="tiny pl-pos">+0.5%</div></div>
+            <span class="hide-sm pl-pos">+8%</span>
+            <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+          </a>
+
+          <a href="stock.html" class="holding-row" style="text-decoration: none;">
+            <span style="font-weight: 700;">EFERT</span>
+            <div><div>Engro Fertilizers <span class="tag tag-dividend">💰 Dividend</span></div><div class="tiny">10% weight</div></div>
+            <div><div>96.40</div><div class="tiny pl-pos">+0.9%</div></div>
+            <span class="hide-sm pl-pos">+12%</span>
+            <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+          </a>
+
+          <a href="stock.html" class="holding-row" style="text-decoration: none;">
+            <span style="font-weight: 700;">HUBC</span>
+            <div><div>Hub Power <span class="tag tag-dividend">💰 Dividend</span></div><div class="tiny">10% weight</div></div>
+            <div><div>158.30</div><div class="tiny pl-pos">+0.2%</div></div>
+            <span class="hide-sm pl-pos">+25%</span>
+            <span class="hide-sm"><span class="badge badge-trim">Watch · Trim</span></span>
+          </a>
+
+          <a href="stock.html" class="holding-row" style="text-decoration: none;">
+            <span style="font-weight: 700;">NESTLE</span>
+            <div><div>Nestle Pakistan <span class="tag tag-growth">🚀 Growth</span></div><div class="tiny">7% weight</div></div>
+            <div><div>7,420</div><div class="tiny pl-neg">−0.4%</div></div>
+            <span class="hide-sm pl-pos">+9%</span>
+            <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+          </a>
+
+          <a href="stock.html" class="holding-row" style="text-decoration: none;">
+            <span style="font-weight: 700;">SYS</span>
+            <div><div>Systems Limited <span class="tag tag-growth">🚀 Growth</span></div><div class="tiny">5% weight</div></div>
+            <div><div>1,082</div><div class="tiny pl-pos">+1.8%</div></div>
+            <span class="hide-sm pl-pos">+34%</span>
+            <span class="hide-sm"><span class="badge badge-buy">Buy</span></span>
+          </a>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDEBAR -->
+      <div class="col" style="gap: 16px;">
+
+        <!-- SIP -->
+        <div class="card" style="padding: 22px;">
+          <div class="row between">
+            <h4>Your SIP this month</h4>
+            <span class="chip chip-accent">15 May</span>
+          </div>
+          <p class="muted mt-8" style="font-size: 14px;">PKR 15,000 · Rupeya recommends:</p>
+          <div class="mt-16" style="display: grid; gap: 8px;">
+            <div class="row between"><span style="font-size: 14px;">+ PKR 5,500 to <strong>EFERT</strong></span><span class="tiny">underweight</span></div>
+            <div class="row between"><span style="font-size: 14px;">+ PKR 5,500 to <strong>FFC</strong></span><span class="tiny">underweight</span></div>
+            <div class="row between"><span style="font-size: 14px;">+ PKR 4,000 to <strong>SYS</strong></span><span class="tiny">underweight</span></div>
+          </div>
+          <button class="btn btn-primary mt-16" style="width: 100%;">Mark as bought</button>
+          <p class="tiny mt-16">Execute via your broker, then mark complete.</p>
+        </div>
+
+        <!-- ASK RUPEYA QUICK -->
+        <div class="card" style="padding: 22px;">
+          <h4>💬 Ask Rupeya</h4>
+          <p class="muted mt-8" style="font-size: 14px;">Got a question? Your AI analyst is on call.</p>
+          <input type="text" class="input mt-16" placeholder="e.g., Should I add OGDC to my portfolio?" />
+          <a href="ask-rupeya.html" class="btn btn-soft mt-16" style="width: 100%;">Open Ask Rupeya →</a>
+        </div>
+
+        <!-- RECENT ALERTS -->
+        <div class="card" style="padding: 22px;">
+          <h4>🔔 Recent alerts</h4>
+          <div class="mt-16" style="display: grid; gap: 12px; font-size: 14px;">
+            <div><span class="dot dot-good"></span> <strong>MEBL</strong> Q1 results filed · <span class="tiny">2h ago</span></div>
+            <div><span class="dot dot-warn"></span> <strong>HUBC</strong> approaching trim threshold · <span class="tiny">1d ago</span></div>
+            <div><span class="dot dot-good"></span> <strong>FFC</strong> dividend declared · <span class="tiny">2d ago</span></div>
+            <div><span class="dot dot-good"></span> <strong>OGDC</strong> better-than-MoS opportunity · <span class="tiny">3d ago</span></div>
+          </div>
+          <a href="#" class="muted tiny mt-16" style="display: inline-block;">View all alerts →</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p class="disclaimer">
+      <strong>Important:</strong> Rupeya.ai is an educational research tool, not a SECP-licensed
+      investment advisor. Verdicts shown are research signals, not buy/sell orders.
+    </p>
+    <hr class="hr" />
+    <p class="tiny">© 2026 Rupeya.ai · Pre-launch prototype</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rupeya.ai — Portfolio Doctor</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+    .nav-app a.active { color: var(--text); border-bottom: 2px solid var(--accent); padding-bottom: 16px; margin-bottom: -16px; }
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 900px) { .input-grid { grid-template-columns: 1fr; } }
+    .holding-input-row { display: grid; grid-template-columns: 90px 1fr 1fr 30px; gap: 8px; align-items: center; }
+    .li-good { color: var(--accent); }
+    .li-warn { color: var(--warn); }
+    .li-bad { color: var(--danger); }
+    .verdict-row { display: grid; grid-template-columns: 80px 1fr 80px 100px; gap: 10px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .verdict-row:last-child { border-bottom: 0; }
+    .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+<nav class="nav nav-app">
+  <div class="container nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">₨</span>
+      <span>Rupeya<span class="ai">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="stock.html">Stocks</a>
+      <a href="compare.html">Compare</a>
+      <a href="portfolio-doctor.html" class="active">Doctor</a>
+      <a href="ask-rupeya.html">Ask Rupeya</a>
+      <span class="avatar" title="Khalid">K</span>
+    </div>
+  </div>
+</nav>
+
+<section class="section-tight">
+  <div class="container">
+
+    <span class="kicker">🩺 Portfolio Doctor</span>
+    <h1 class="mt-16" style="font-size: 36px;">Get a second opinion on your PSX portfolio</h1>
+    <p class="muted mt-8" style="max-width: 640px;">
+      Paste your existing holdings — even ones you bought before joining Rupeya. Our AI runs
+      every position through the 4-pillar framework and gives you a clear verdict, plus a
+      ranked action plan. No tips. No hype. Just analysis.
+    </p>
+
+    <!-- INPUT -->
+    <div class="card mt-32" style="padding: 28px;">
+      <h3>Your holdings</h3>
+      <p class="muted mt-8" style="font-size: 14px;">Add each stock with quantity and average cost. Or paste a CSV in the box below.</p>
+
+      <div class="mt-24" style="display: grid; gap: 10px;">
+        <div class="holding-input-row" style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em;">
+          <span>Ticker</span><span>Quantity</span><span>Avg cost (PKR)</span><span></span>
+        </div>
+        <div class="holding-input-row">
+          <input class="input" value="OGDC" />
+          <input class="input" value="200" />
+          <input class="input" value="115.50" />
+          <button class="muted" style="background: transparent;">×</button>
+        </div>
+        <div class="holding-input-row">
+          <input class="input" value="HBL" />
+          <input class="input" value="150" />
+          <input class="input" value="98.20" />
+          <button class="muted" style="background: transparent;">×</button>
+        </div>
+        <div class="holding-input-row">
+          <input class="input" value="DGKC" />
+          <input class="input" value="80" />
+          <input class="input" value="135.40" />
+          <button class="muted" style="background: transparent;">×</button>
+        </div>
+        <div class="holding-input-row">
+          <input class="input" value="MARI" />
+          <input class="input" value="60" />
+          <input class="input" value="2,180" />
+          <button class="muted" style="background: transparent;">×</button>
+        </div>
+        <div class="holding-input-row">
+          <input class="input" value="HUMNL" />
+          <input class="input" value="500" />
+          <input class="input" value="9.40" />
+          <button class="muted" style="background: transparent;">×</button>
+        </div>
+      </div>
+
+      <div class="row mt-24" style="gap: 12px;">
+        <button class="btn btn-ghost">+ Add another</button>
+        <button class="btn btn-soft">📋 Paste CSV instead</button>
+        <button class="btn btn-primary" style="margin-left: auto;">Run diagnosis →</button>
+      </div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="row" style="gap: 16px; margin: 48px 0; align-items: center;">
+      <hr style="flex: 1; border: 0; border-top: 1px solid var(--border);" />
+      <span class="chip">Sample diagnosis below</span>
+      <hr style="flex: 1; border: 0; border-top: 1px solid var(--border);" />
+    </div>
+
+    <!-- HEALTH SCORE -->
+    <div class="card card-hl" style="padding: 28px;">
+      <div class="row between wrap" style="gap: 24px;">
+        <div>
+          <div class="tiny">Diagnosis · 5 holdings analyzed</div>
+          <h2 class="mt-8">Portfolio Health: <span style="color: var(--warn);">62 / 100</span></h2>
+          <p class="muted mt-8" style="max-width: 540px;">
+            Mixed quality. Two strong holdings, one over-concentrated bet, and two positions
+            that should be exited. Following the action plan below could improve the score
+            to ~82 within 30 days.
+          </p>
+        </div>
+        <div class="col" style="gap: 6px; min-width: 180px;">
+          <div class="row between"><span class="tiny">Total invested</span><span style="font-weight: 600;">PKR 2,06,800</span></div>
+          <div class="row between"><span class="tiny">Current value</span><span style="font-weight: 600;">PKR 2,18,200</span></div>
+          <div class="row between"><span class="tiny">Diversification</span><span style="font-weight: 600; color: var(--warn);">Weak</span></div>
+          <div class="row between"><span class="tiny">Shariah-compliance</span><span style="font-weight: 600;">3 of 5</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRENGTHS / WEAKNESSES -->
+    <div class="grid-2 mt-24">
+      <div class="card" style="padding: 24px;">
+        <h3>✅ What's working</h3>
+        <ul class="mt-16" style="display: grid; gap: 12px; list-style: none; font-size: 14.5px; line-height: 1.6;">
+          <li class="row" style="gap: 12px; align-items: flex-start;"><span class="li-good">●</span><span><strong>OGDC</strong> is a high-quality, deeply undervalued energy holding with 32% margin of safety. Keep it.</span></li>
+          <li class="row" style="gap: 12px; align-items: flex-start;"><span class="li-good">●</span><span><strong>MARI Petroleum</strong> has a durable moat and best-in-class ROIC for PSX energy.</span></li>
+          <li class="row" style="gap: 12px; align-items: flex-start;"><span class="li-good">●</span><span>Forward dividend yield at <strong>8.4%</strong> is attractive given a 10Y PIB of ~12%.</span></li>
+        </ul>
+      </div>
+      <div class="card" style="padding: 24px;">
+        <h3>⚠️ What needs attention</h3>
+        <ul class="mt-16" style="display: grid; gap: 12px; list-style: none; font-size: 14.5px; line-height: 1.6;">
+          <li class="row" style="gap: 12px; align-items: flex-start;"><span class="li-warn">●</span><span><strong>62%</strong> of your portfolio sits in just two sectors (energy &amp; banking). One adverse policy change could whipsaw 60% of your wealth.</span></li>
+          <li class="row" style="gap: 12px; align-items: flex-start;"><span class="li-bad">●</span><span><strong>HUMNL</strong> (Hum Network) flagged for going-concern uncertainty in its latest audit. <strong>Exit</strong> recommended.</span></li>
+          <li class="row" style="gap: 12px; align-items: flex-start;"><span class="li-warn">●</span><span><strong>HBL</strong> is a conventional bank — fails Shariah screen. If your profile is Shariah-only, swap into <strong>MEBL</strong>.</span></li>
+          <li class="row" style="gap: 12px; align-items: flex-start;"><span class="li-warn">●</span><span><strong>DGKC</strong> is at fair value with stretched leverage (D/E 1.4x). Consider <strong>trim</strong>.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- VERDICTS -->
+    <div class="card mt-24" style="padding: 24px;">
+      <h3>Per-stock verdicts</h3>
+      <div class="mt-16">
+        <div class="verdict-row" style="border-bottom: 1px solid var(--border-strong); padding-bottom: 8px;">
+          <span class="tiny">TICKER</span>
+          <span class="tiny">REASONING</span>
+          <span class="tiny">SCORE</span>
+          <span class="tiny">VERDICT</span>
+        </div>
+        <div class="verdict-row">
+          <span><span style="font-weight: 700;">OGDC</span> <span class="tag tag-dividend">💰 Dividend</span></span>
+          <span class="muted">Deep value, 32% margin of safety, strong FCF.</span>
+          <span>4.4</span>
+          <span class="badge badge-strong-buy">Strong Buy</span>
+        </div>
+        <div class="verdict-row">
+          <span><span style="font-weight: 700;">MARI</span> <span class="tag tag-both">⚖️ Both</span></span>
+          <span class="muted">Best ROIC in E&amp;P; expensive but quality justifies premium.</span>
+          <span>4.0</span>
+          <span class="badge badge-buy">Buy</span>
+        </div>
+        <div class="verdict-row">
+          <span><span style="font-weight: 700;">HBL</span> <span class="tag tag-dividend">💰 Dividend</span></span>
+          <span class="muted">Decent fundamentals but fails Shariah screen given your profile.</span>
+          <span>3.6</span>
+          <span class="badge badge-trim">Trim → Swap</span>
+        </div>
+        <div class="verdict-row">
+          <span><span style="font-weight: 700;">DGKC</span> <span class="tag tag-growth">🚀 Growth</span></span>
+          <span class="muted">At fair value, leverage rising, weaker than Lucky Cement.</span>
+          <span>3.0</span>
+          <span class="badge badge-hold">Hold</span>
+        </div>
+        <div class="verdict-row">
+          <span><span style="font-weight: 700;">HUMNL</span> <span class="tag tag-growth">🚀 Growth</span></span>
+          <span class="muted">Going-concern flag, declining ad revenue, balance-sheet strain.</span>
+          <span>1.6</span>
+          <span class="badge badge-exit">Exit</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    <div class="card card-hl mt-24" style="padding: 28px;">
+      <h3>📋 Your action plan</h3>
+      <p class="muted mt-8">Five ranked moves. Do them in order.</p>
+
+      <div class="mt-24" style="display: grid; gap: 18px;">
+        <div class="row" style="gap: 14px; align-items: flex-start;">
+          <span class="step-num">1</span>
+          <div>
+            <h4>Exit HUMNL position</h4>
+            <p class="muted mt-8" style="font-size: 14px;">Sell all 500 shares (~PKR 4,700). Going-concern audit qualification + 3 years of declining ad revenue. Redeploy proceeds in step 4.</p>
+          </div>
+        </div>
+        <div class="row" style="gap: 14px; align-items: flex-start;">
+          <span class="step-num">2</span>
+          <div>
+            <h4>Swap HBL → MEBL</h4>
+            <p class="muted mt-8" style="font-size: 14px;">Sell 150 HBL shares (~PKR 14,730), buy ~70 MEBL shares. Maintains banking exposure but moves you to Shariah-compliant Meezan Bank, which has a higher RupeyaScore (4.3 vs 3.6) and better ROE.</p>
+          </div>
+        </div>
+        <div class="row" style="gap: 14px; align-items: flex-start;">
+          <span class="step-num">3</span>
+          <div>
+            <h4>Trim DGKC by 50%</h4>
+            <p class="muted mt-8" style="font-size: 14px;">Sell 40 of 80 shares (~PKR 5,400). DGKC sits at fair value with rising leverage. Half-position keeps cement exposure without overstaying.</p>
+          </div>
+        </div>
+        <div class="row" style="gap: 14px; align-items: flex-start;">
+          <span class="step-num">4</span>
+          <div>
+            <h4>Add ENGRO and FFC</h4>
+            <p class="muted mt-8" style="font-size: 14px;">Use proceeds from steps 1 + 3 (~PKR 10,100) to add Engro and FFC. Both are Shariah-compliant, in BUY territory, and improve sector diversification (currently overweight energy).</p>
+          </div>
+        </div>
+        <div class="row" style="gap: 14px; align-items: flex-start;">
+          <span class="step-num">5</span>
+          <div>
+            <h4>Add Nestle &amp; Systems Limited (next month's SIP)</h4>
+            <p class="muted mt-8" style="font-size: 14px;">Defensive food + USD-revenue tech are missing entirely. Allocate next month's SIP (PKR 15,000) split equally to NESTLE and SYS.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-24" style="gap: 12px;">
+        <button class="btn btn-primary">Apply to my portfolio</button>
+        <button class="btn btn-ghost">Download PDF report</button>
+        <a href="ask-rupeya.html" class="btn btn-soft">💬 Ask about any move</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p class="disclaimer">
+      <strong>Important:</strong> Rupeya.ai is an educational research tool, not a SECP-licensed
+      investment advisor. The action plan above is a research signal generated by AI, not a
+      recommendation to trade. Consult a SECP-registered advisor before acting.
+    </p>
+    <hr class="hr" />
+    <p class="tiny">© 2026 Rupeya.ai · Pre-launch prototype</p>
+  </div>
+</footer>
+
+</body>
+</html>
