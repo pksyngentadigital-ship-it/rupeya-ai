@@ -17,7 +17,7 @@ Status: Pre-development blueprint, ready to hand to AI coding agents (Cursor / C
 | Backend / DB / Auth | Supabase (Postgres + Auth + Storage + Edge Functions + Row-Level Security) | One service replaces 4–5. Free tier comfortably covers 0–500 paying users. |
 | AI/LLM | Hosted LLM APIs only (Claude Haiku for bulk, Claude Sonnet for high-stakes verdicts; Gemini 1.5 Flash free tier as fallback) | Zero infra. ~$0.05–0.30 per active user/month at MVP volumes. No GPU. |
 | Quant engine | Pure Python (FastAPI on Render free tier OR Supabase Edge Functions) for ratios/DCF/scoring | Deterministic financial math NEVER goes through an LLM. LLM only narrates verdicts. |
-| Data sourcing | Scraping-only MVP (PSX, Business Recorder, Dawn Business, Profit, Mettis public pages, company IR pages, SECP filings) | Cheapest path to MVP. Plan to license Mettis/PSX DataPortal once paid users justify cost (~Phase 2). |
+| Data sourcing | Scraping-only MVP (PSX, Business Recorder, Dawn Business, Profit, Mettis public pages, company IR pages, SECP filings, **Investing.com** for historical prices/dividends) | Cheapest path to MVP. Investing.com is the primary source for clean historical price and dividend tables (better structured than PSX's own pages); however it has aggressive bot protection and requires a browser-emulating scraper. Plan to license Mettis/PSX DataPortal once paid users justify cost (~Phase 2). |
 | Platform priority | Web app first (Next.js PWA, mobile-responsive). Native apps in Phase 3. | 90% feature parity at 10% cost. |
 | Payments (MVP) | Bank transfer / IBFT with manual admin verification | Zero gateway fees, zero integration. Acceptable up to ~500 paying users. |
 | Payments (Phase 1.5) | **Safepay** (cards + JazzCash + EasyPaisa in one integration) | Pakistani gateway, ~3% MDR, easiest single integration for PK retail. |
@@ -79,8 +79,8 @@ Status: Pre-development blueprint, ready to hand to AI coding agents (Cursor / C
 │  • DCF / valuation   │             │  Render cron.               │
 │  • Scoring engine    │             │                             │
 │  • Portfolio builder │             │  Sources: PSX, BR, Dawn,    │
-│  • Rebalancer        │             │  Profit, Sarmaya, Mettis    │
-└──────────┬───────────┘             │  public pages, company IR.  │
+│  • Rebalancer        │             │  Profit, Sarmaya, Mettis,   │
+└──────────┬───────────┘             │  IR pages, Investing.com.   │
            │                         └──────────┬──────────────────┘
            │                                    │
            ▼                                    ▼
@@ -338,7 +338,7 @@ The AI is opinionated. Its prompts and scoring weights enforce a single worldvie
 4. **Margin of safety is non-negotiable.** Pakistan's macro is volatile (currency, inflation, politics). We require a wider margin of safety (≥25%) than a US value investor would.
 5. **Cash is truth.** Earnings can be massaged; free cash flow is harder to fake. We weight FCF heavily.
 6. **Dividends are discipline.** Companies that consistently pay rising dividends from real cash flow are self-policing for capital allocation.
-7. **Diversify, but don't dilute.** 8–15 stocks across 4–6 sectors is the sweet spot for Pakistani retail. Index funds don't really exist meaningfully for KSE-100 retail; we partially fill that gap.
+7. **Diversify, but don't dilute.** **6–7 stocks across 4–5 sectors** is the sweet spot for Pakistani retail. A retail investor cannot meaningfully follow 12+ names; concentration forces conviction and makes every pick matter. We expand to **8–9 only when** an additional candidate carries RupeyaScore ≥ 4.2 AND opens a sector the portfolio doesn't already cover. Hard cap is **9**. Excellent runners-up go to the watchlist, not the portfolio. Index funds don't really exist meaningfully for KSE-100 retail; we partially fill that gap with a tightly curated active book.
 8. **Boring beats brilliant.** Cement, fertilizer, banks, OMCs, food — boring PSX compounders are usually better than the latest "tech IPO."
 9. **Know what you own.** Every recommendation comes with a 1-paragraph "Owner's Manual" the user can re-read in 60 seconds.
 10. **Sit on your hands.** Default action is "do nothing." The platform actively *discourages* over-trading.
@@ -373,15 +373,18 @@ The `shariah_only` flag is **the most important filter in the entire system** �
 
 ### 6.2 AI Portfolio Builder
 Inputs: Investor Profile.
+
+**Sizing target (concentrated by design).** Rupeya recommends **6–7 holdings** by default. The optimizer expands to **8–9 only when** an additional candidate clears RupeyaScore ≥ 4.2 AND opens a sector not already represented. **Hard cap: 9 holdings.** Runners-up go to the watchlist. The rationale is in Section 5, principle 7: a retail investor cannot meaningfully follow 12+ names, and concentration forces conviction.
+
 Algorithm:
 1. **Universe filter** — start from the ~80 covered PSX stocks, filter out those failing minimum quality thresholds (e.g., RupeyaScore < 3.0, going-concern flags). **If `shariah_only = true`, hard-filter to KMI All-Share Index members only (~50 PSX stocks).**
-2. **Sector caps** — apply max-per-sector rule (default 25% per sector for balanced profile, 35% for aggressive, 20% for conservative).
+2. **Sector caps** — apply max-per-sector rule (default 30% per sector for balanced profile, 35% for aggressive, 25% for conservative). Caps are slightly higher than the previous 8–12 sizing because position counts are smaller.
 3. **Risk-tier mix** — split target capital between three buckets (% varies by user risk score):
    - *Anchor tier* (large-cap dividend payers — banks, OMCs, fertilizers)
    - *Compounder tier* (high-quality mid-caps)
    - *Opportunity tier* (special situations / undervalued cyclicals)
-4. **Optimizer** — pick top-N from each bucket maximizing composite RupeyaScore, subject to sector caps and a minimum-position-size rule (no position < 5% of portfolio to avoid stub positions).
-5. **Output** — 8–12 stocks with target weights, expected dividend yield, blended margin of safety, and a 1-page narrative explaining sector logic.
+4. **Optimizer** — pick the top-N (where N starts at 7) maximizing composite RupeyaScore, subject to sector caps and a minimum-position-size rule (no position < 10% of portfolio — concentration means each position must matter). Then apply the **expansion rule**: scan ranks 8–10 and add any candidate that BOTH scores ≥ 4.2 AND opens a new sector. Stop at 9 holdings even if more candidates qualify.
+5. **Output** — 6–9 stocks with target weights, expected dividend yield, blended margin of safety, and a 1-page narrative explaining sector logic. **A separate "Watchlist runners-up" section** lists the next 3–5 stocks that scored well but didn't make the portfolio, with one-line reasoning on why each was excluded (sector full, slightly lower score, etc.).
 
 User can accept, swap any stock for the next-best alternative, or save and revisit.
 
@@ -818,6 +821,7 @@ Because the founder is not a developer, the build process is structured to maxim
 | Risk | Mitigation |
 |---|---|
 | Scraping breaks (PSX/source changes layout) | Multi-source redundancy; alerting on scrape failures; license real feed by Phase 2. |
+| Investing.com scraper blocked by Cloudflare / captchas | Use Playwright with browser-realistic fingerprints, slow request pacing (1 req / 3 sec), residential-IP fallback if needed; treat investing.com as a *secondary* source for cross-validation, with PSX/BR as primary; gracefully degrade if blocked. Reconsider paid API tier if free path becomes unreliable. |
 | LLM hallucination on financials | Quant-First/LLM-Last rule; numbers never come from LLM; outputs cite sources. |
 | SECP regulatory action | Educational positioning + disclaimers + lawyer on retainer + roadmap to licensing. |
 | Payment fraud / chargebacks (Phase 1.5) | Safepay handles. Manual KYC for high-tier subs. |
@@ -848,7 +852,7 @@ The MVP is ready to launch publicly when **all** of the following are true:
 
 - 80 PSX stocks covered with up-to-date prices (< 24h), latest 8 quarterly fundamentals, and a current RupeyaScore.
 - Onboarding completes in < 3 minutes; profile saved.
-- Portfolio Builder returns 8–12 stocks with weights and narrative in < 30 seconds.
+- Portfolio Builder returns 6–7 stocks (up to 9 in qualifying special cases per Section 6.2 expansion rule) with weights, narrative, and a "Runners-up Watchlist" in < 30 seconds.
 - Portfolio Doctor accepts ≥10 holdings and produces a report with verdicts in < 60 seconds.
 - Subscription paywall blocks gated features; manual bank-transfer verification works end-to-end.
 - All disclaimers visible on all gated surfaces.
