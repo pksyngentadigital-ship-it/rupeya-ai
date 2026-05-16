@@ -2,14 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  background-color: #0B0F14;
-  color: #E6EDF3;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* -------------------------------------------------------------
+   Rupeya.ai — Global styles
+   Goal: replicate prototype/style.css base layer.
+   Component-level styles live in React + Tailwind utilities.
+   ------------------------------------------------------------- */
 
-* {
-  box-sizing: border-box;
+@layer base {
+  /* Body defaults */
+  html,
+  body {
+    background-color: #0b0f14;
+    color: #e6edf3;
+    font-family:
+      ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+      "Helvetica Neue", Inter, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Heading scale — matches prototype/style.css exactly */
+  h1 {
+    font-size: 56px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  h2 {
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+  }
+  h3 {
+    font-size: 20px;
+    line-height: 1.25;
+    font-weight: 600;
+  }
+  h4 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  /* Mobile heading shrink (matches prototype @media max-width 700px) */
+  @media (max-width: 700px) {
+    h1 {
+      font-size: 38px;
+    }
+    h2 {
+      font-size: 26px;
+    }
+  }
+
+  /* Link defaults */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  a:hover {
+    color: #16c784;
+  }
+
+  /* Visible focus ring everywhere — accessibility win the prototype lacked */
+  :focus-visible {
+    outline: 2px solid #16c784;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
