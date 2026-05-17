@@ -24,6 +24,7 @@ const PUBLIC_LINKS = [
 const APP_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/portfolio/build", label: "Portfolio" },
+  { href: "/portfolio/doctor", label: "Doctor" },
   { href: "/compare", label: "Compare" },
   { href: "/ask", label: "Ask Rupeya" },
 ];

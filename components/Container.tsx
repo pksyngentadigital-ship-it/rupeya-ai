@@ -9,8 +9,9 @@ interface ContainerProps {
 }
 
 export default function Container({ children, className = "" }: ContainerProps) {
+  // Tighter horizontal padding on mobile so cards have more breathing room.
   return (
-    <div className={`mx-auto w-full max-w-page px-6 ${className}`}>
+    <div className={`mx-auto w-full max-w-page px-4 sm:px-6 ${className}`}>
       {children}
     </div>
   );
