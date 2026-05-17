@@ -35,12 +35,17 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# python (for /scrapers later)
+# python (for /scrapers)
 __pycache__/
 *.py[cod]
 *.egg-info/
 .venv/
 venv/
+scrapers/.env
+
+# project caches
+.cache/
+*.log
 
 # os
 .idea/

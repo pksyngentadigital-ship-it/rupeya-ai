@@ -1,0 +1,27 @@
+# Rupeya.ai scrapers — Python dependencies
+# Install via: pip install --only-binary=:all: -r requirements.txt
+#
+# Loose version constraints so pip can pick whatever's wheels-available for
+# the current Python version (3.12 → 3.14 supported). Caret upper bounds
+# prevent accidental upgrades to incompatible major versions.
+
+# HTTP client
+httpx>=0.27,<1.0
+
+# Fast HTML parser (~10x faster than BeautifulSoup)
+selectolax>=0.4.9
+
+# Supabase client
+supabase>=2.9,<3
+
+# Environment variable loading
+python-dotenv>=1.0
+
+# Date / time parsing helpers
+python-dateutil>=2.9
+
+# Retry decorator for flaky upstream sources
+tenacity>=9.0
+
+# pandas is dropped from B2; added back in B3 (fundamentals) when we need
+# DataFrame operations. Removing avoids Python-3.14-wheel-availability risk.

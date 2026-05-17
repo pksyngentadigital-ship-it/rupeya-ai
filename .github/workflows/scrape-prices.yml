@@ -1,0 +1,58 @@
+# Rupeya.ai — Daily PSX price scrape
+# -----------------------------------------------------------
+# Runs the Python scraper on GitHub Actions' free tier.
+#
+# Schedule: 13:30 UTC = 18:30 PKT, Mon–Fri (~2h after PSX close at 4:30pm).
+# Manual trigger: workflow_dispatch lets you run it on demand from the
+# GitHub Actions UI.
+#
+# Secrets required (Settings → Secrets and variables → Actions):
+#   • SUPABASE_URL
+#   • SUPABASE_SERVICE_ROLE_KEY
+# -----------------------------------------------------------
+
+name: Scrape PSX prices
+
+on:
+  schedule:
+    # 13:30 UTC = 18:30 PKT
+    # Mon (1) – Fri (5)
+    - cron: "30 13 * * 1-5"
+  workflow_dispatch: # allow manual runs from the GitHub UI
+
+# Allow only one concurrent run; cancel any older queued run.
+concurrency:
+  group: scrape-prices
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    name: Scrape PSX market watch
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scrapers/requirements.txt
+
+      - name: Install dependencies
+        working-directory: scrapers
+        run: |
+          python -m pip install --upgrade pip
+          pip install --only-binary=:all: -r requirements.txt
+
+      - name: Run scrape
+        working-directory: scrapers
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SCRAPE_DELAY_SECONDS: "1"
+          LOG_LEVEL: INFO
+        run: python scrape_prices.py
