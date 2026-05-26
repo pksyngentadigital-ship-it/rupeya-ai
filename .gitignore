@@ -51,6 +51,9 @@ scrapers/imports/*.csv
 scrapers/imports/imported/
 scrapers/imports/discarded/
 
+# Internal-only documentation (architecture doc for boss review, etc.)
+docs/
+
 # project caches
 .cache/
 *.log
