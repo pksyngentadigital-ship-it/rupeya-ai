@@ -1,10 +1,13 @@
 """
 Rupeya.ai — Supabase loader + scrape_runs logger.
 
-Writes scraped PriceRecords to public.prices_daily and records a summary
-row in public.scrape_runs so we know what happened on every run.
+Writes scraped records to:
+  • public.prices_daily          (B2 — PriceRecord)
+  • public.fundamentals_quarterly (B3a — FundamentalRow)
+and records a summary row in public.scrape_runs on every run.
 
-Idempotent: prices_daily PK is (ticker, date) so re-runs upsert cleanly.
+Idempotent: both target tables have multi-column PKs so re-runs upsert
+cleanly without duplicating data.
 """
 
 from __future__ import annotations
@@ -13,9 +16,13 @@ import json
 import logging
 from dataclasses import asdict
 from datetime import datetime, timezone
+from typing import TYPE_CHECKING
 
 from . import db
 from .psx_scraper import PriceRecord
+
+if TYPE_CHECKING:
+    from .fundamentals.models import FundamentalRow
 
 log = logging.getLogger("rupeya.loader")
 
@@ -140,3 +147,45 @@ def get_covered_tickers() -> list[str]:
     tickers = [row["ticker"] for row in (resp.data or [])]
     log.info("Loaded %d covered tickers from DB", len(tickers))
     return tickers
+
+
+# ---------- B3a: fundamentals upsert ----------
+
+
+def upsert_fundamentals(rows: "list[FundamentalRow]") -> int:
+    """Upsert FundamentalRow objects into public.fundamentals_quarterly.
+
+    PK is (ticker, period) — re-runs overwrite, never duplicate.
+
+    Returns the count of rows written.
+    """
+    if not rows:
+        log.warning("upsert_fundamentals: no rows")
+        return 0
+
+    client = db.get_client()
+    db_rows = [r.to_db_row() for r in rows]
+
+    resp = (
+        client.table("fundamentals_quarterly")
+        .upsert(db_rows, on_conflict="ticker,period")
+        .execute()
+    )
+    written = len(resp.data or [])
+    log.info("Upserted %d row(s) to fundamentals_quarterly", written)
+    return written
+
+
+def get_existing_fundamentals_periods(ticker: str) -> set[str]:
+    """Return the set of period strings already present for a ticker.
+
+    Used by the fundamentals orchestrator's skip-if-exists guard.
+    """
+    client = db.get_client()
+    resp = (
+        client.table("fundamentals_quarterly")
+        .select("period")
+        .eq("ticker", ticker.upper())
+        .execute()
+    )
+    return {row["period"] for row in (resp.data or [])}
