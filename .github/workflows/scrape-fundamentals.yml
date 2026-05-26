@@ -1,0 +1,104 @@
+# Rupeya.ai — Weekly PSX fundamentals refresh (hybrid: inline + new-filing PDFs)
+# -----------------------------------------------------------
+# Runs TWO complementary jobs every Sunday morning:
+#
+#   1. INLINE SCRAPE (free, no LLM): refreshes revenue/NI/EPS for any
+#      stock whose DPS company-page tables have updated values. Pure
+#      HTTP + HTML parsing, $0 cost.
+#
+#   2. NEW-FILING DEEP EXTRACTION (Claude Haiku): for each covered ticker
+#      with a financial filing NOT YET in fundamentals_quarterly (i.e.
+#      newly published since last Sunday), downloads the PDF and extracts
+#      all 8 columns. Skip-if-exists logic in pipeline.py ensures we never
+#      re-process periods already stored. Hard --budget 5 flag caps the
+#      weekly Claude spend at $5 USD.
+#
+# Schedule: 21:00 UTC Saturday = 02:00 PKT Sunday — off-peak hours, free
+# minutes plentiful. Catches anything posted Fri-Sat and lands fresh data
+# before Monday open.
+#
+# Expected weekly cost: $0.15–$0.45 typical week; $1–$1.50 earnings-season
+# weeks (Feb/May/Aug/Nov). Annual: ~$15–20.
+#
+# Secrets required (Settings → Secrets and variables → Actions):
+#   • SUPABASE_URL
+#   • SUPABASE_SERVICE_ROLE_KEY
+#   • ANTHROPIC_API_KEY  ← NEW: required for Job 2 (deep extraction)
+# -----------------------------------------------------------
+
+name: Scrape PSX fundamentals (weekly)
+
+on:
+  schedule:
+    # 21:00 UTC Saturday = 02:00 PKT Sunday
+    - cron: "0 21 * * 6"
+  workflow_dispatch: # allow manual runs from the GitHub UI
+
+# Allow only one concurrent run; cancel any older queued run.
+concurrency:
+  group: scrape-fundamentals
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    name: Refresh PSX fundamentals (inline + new-filing extraction)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scrapers/requirements.txt
+
+      - name: Install dependencies
+        working-directory: scrapers
+        run: |
+          python -m pip install --upgrade pip
+          pip install --only-binary=:all: -r requirements.txt
+
+      # ---- Step 1: Inline scrape (free, no LLM) ----
+      # Refreshes revenue/net_income/EPS from DPS company-page tables.
+      # Acts as a safety net for any stock whose inline tables update
+      # outside the normal filing cycle.
+      - name: Run inline fundamentals scrape
+        working-directory: scrapers
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SCRAPE_DELAY_SECONDS: "1"
+          LOG_LEVEL: INFO
+        run: python scrape_inline_fundamentals.py
+
+      # ---- Step 2: New-filing deep extraction (Claude Haiku) ----
+      # For each covered ticker, processes ONLY the most recent financial
+      # filing IF it's not already in fundamentals_quarterly (period-based
+      # skip-if-exists). Hard --budget 5 flag caps weekly spend at $5.
+      # In practice, after backfill is complete, this only extracts the
+      # 5-15 stocks that filed in the past week (~$0.15-1.50/week).
+      - name: Get covered tickers + run deep extraction for new filings
+        working-directory: scrapers
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SCRAPE_DELAY_SECONDS: "1"
+          LOG_LEVEL: INFO
+        run: |
+          # Load the universe (~96 tickers) from Supabase, then pass them
+          # all to the fundamentals pipeline with --max 1 (only the most
+          # recent filing per ticker) and --budget 5 (hard cost cap).
+          python - <<'PY'
+          from rupeya import loader
+          import sys
+          tickers = loader.get_covered_tickers()
+          print(f"Will run deep extraction across {len(tickers)} tickers (--max 1, --budget 5)")
+          sys.argv = ["__main__"] + tickers + ["--max", "1", "--budget", "5"]
+          from rupeya.fundamentals.__main__ import main
+          sys.exit(main())
+          PY
