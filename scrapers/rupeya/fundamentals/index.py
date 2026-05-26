@@ -160,6 +160,15 @@ def classify_announcement(ctx: str) -> str:
 
 # --- HTTP layer --------------------------------------------------------------
 
+# Some PSX symbols differ from our canonical tickers (we use the longer
+# name in the stocks table; PSX's company page uses an abbreviated symbol).
+# Restricted to confirmed problem cases — adding speculative entries here
+# would break currently-working URLs (e.g. /company/ENGRO already resolves).
+_CANONICAL_TO_PSX_SYMBOL: dict[str, str] = {
+    "ABBOTT": "ABOT",
+    "BERGER": "BERG",
+}
+
 
 @retry(
     stop=stop_after_attempt(3),
@@ -168,8 +177,14 @@ def classify_announcement(ctx: str) -> str:
     reraise=True,
 )
 def fetch_company_page(ticker: str, timeout: float = 30.0) -> str:
-    """Fetch dps.psx.com.pk/company/{TICKER} and return raw HTML."""
-    url = f"{DPS_BASE}/company/{ticker.upper()}"
+    """Fetch dps.psx.com.pk/company/{TICKER} and return raw HTML.
+
+    Resolves canonical-to-PSX symbol mismatches (e.g., ABBOTT → ABOT) via
+    _CANONICAL_TO_PSX_SYMBOL so callers can pass our stocks-table ticker
+    without worrying about PSX's abbreviated naming.
+    """
+    psx_symbol = _CANONICAL_TO_PSX_SYMBOL.get(ticker.upper(), ticker.upper())
+    url = f"{DPS_BASE}/company/{psx_symbol}"
     log.info("GET %s", url)
     with httpx.Client(
         headers=HEADERS, timeout=timeout, follow_redirects=True, http2=False

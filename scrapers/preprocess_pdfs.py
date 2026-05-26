@@ -40,7 +40,7 @@ ARCHIVE_DIR = Path(__file__).resolve().parent / "filings_archive"
 # Keyword → weight for scoring page financial-statement-likeness.
 # Higher weight = stronger signal that this page contains the data we want.
 KEYWORDS = {
-    # Highly specific to financial-statement tables
+    # ── Highly specific to financial-statement tables ──
     "profit after taxation": 6,
     "profit after tax": 5,
     "earnings per share": 5,
@@ -51,15 +51,15 @@ KEYWORDS = {
     "financial highlights": 5,
     "at a glance": 4,
     "key ratios": 4,
-    # Balance sheet / income statement headers
+    # ── Balance sheet / income statement headers ──
     "balance sheet": 4,
-    "statement of financial position": 4,
+    "statement of financial position": 5,  # banks use this exact phrase
     "statement of profit": 4,
     "income statement": 4,
     "cash flow statement": 4,
     "statement of cash flow": 4,
     "comprehensive income": 3,
-    # Specific line items
+    # ── Specific line items (general) ──
     "net sales": 3,
     "turnover": 2,
     "gross profit": 2,
@@ -74,12 +74,65 @@ KEYWORDS = {
     "cash and cash equivalents": 4,
     "dividend per share": 4,
     "book value": 3,
-    # Common report markers
+    # ── Bank-specific line items (added for B3a Phase 4) ──
+    "balances with treasury banks": 5,
+    "balances with other banks": 4,
+    "lendings to financial institutions": 4,
+    "due from financial institutions": 4,
+    "borrowings from financial institutions": 4,
+    "deposits and other accounts": 5,
+    "subordinated debt": 4,
+    "interest bearing liabilities": 5,
+    "non-performing loans": 3,
+    "advances - net": 4,
+    "investments - net": 4,
+    "fee and commission": 3,
+    "non mark-up income": 3,
+    "non markup income": 3,
+    "mark-up / return / interest earned": 5,
+    "mark-up / return / interest expensed": 5,
+    "net mark-up": 4,
+    "net markup": 4,
+    "credit loss allowance": 3,
+    # ── Common report markers ──
     "interest earned": 2,
     "markup earned": 2,
     "mark-up": 2,
     "revenue": 2,
     "dividend": 1,
+    # ── Multi-year summary tables (annual reports) ──
+    "year ended": 2,
+    "ratios": 2,
+    "summary": 1,
+    # ── Insurance-specific line items (added for B3a Phase 5) ──
+    "net premium written": 5,
+    "net premium earned": 5,
+    "gross premium written": 4,
+    "gross premium": 4,
+    "premium income": 4,
+    "net premium": 4,
+    "underwriting result": 5,
+    "underwriting expenses": 4,
+    "underwriting income": 4,
+    "policyholders": 4,
+    "policy holders": 4,
+    "claims expenses": 4,
+    "net claims": 4,
+    "reinsurance": 3,
+    "investment income": 4,
+    "takaful": 3,
+    "operator's fund": 3,
+    "participants' takaful fund": 3,
+    # ── Shipping/transport-specific (added for B3a Phase 5) ──
+    "freight revenue": 5,
+    "freight earnings": 5,
+    "charter hire": 4,
+    "voyage profit": 4,
+    "fleet": 2,
+    "vessel": 2,
+    "slot charter": 3,
+    "demurrage": 3,
+    "bunker": 2,
 }
 
 NUMBER_RE = re.compile(r"\d")
