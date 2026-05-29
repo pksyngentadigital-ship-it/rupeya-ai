@@ -189,3 +189,28 @@ def get_existing_fundamentals_periods(ticker: str) -> set[str]:
         .execute()
     )
     return {row["period"] for row in (resp.data or [])}
+
+
+# ---------- B4: stock_scores upsert ----------
+
+
+def upsert_stock_scores(rows: "list[dict]") -> int:
+    """Upsert scoring rows into public.stock_scores.
+
+    PK is `ticker`, so re-runs overwrite the latest score and never duplicate.
+    Accepts plain dicts (StockScoreResult.to_db_row()) to keep this module
+    decoupled from the scoring package's types.
+    """
+    if not rows:
+        log.warning("upsert_stock_scores: no rows")
+        return 0
+
+    client = db.get_client()
+    resp = (
+        client.table("stock_scores")
+        .upsert(rows, on_conflict="ticker")
+        .execute()
+    )
+    written = len(resp.data or [])
+    log.info("Upserted %d row(s) to stock_scores", written)
+    return written
