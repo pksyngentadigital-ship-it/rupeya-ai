@@ -1,21 +1,15 @@
-"""
-Rupeya.ai B4 — deterministic, $0-API scoring engine.
+"""Rupeya.ai B4 scoring engine -- deterministic, $0-API. Quant-First / LLM-Last.
 
-Quant-First / LLM-Last: every number here is computed by audited Python from
-the fundamentals + price spine. No LLM ever touches a figure in this package.
-
-B4.0 (this commit) ships the foundation only:
-  • macro    — Pakistan macro yardsticks (KIBOR/PIB/CPI)
-  • periods  — cumulative→standalone, TTM, CAGR algebra
-  • stats    — robust (median/MAD) cross-sectional helpers
-  • types    — glass-box dataclasses (ScoreComponent / PillarResult / StockBundle …)
-  • data     — load_universe(): raw rows -> analyst-ready StockBundles
-Pillar scoring (B4.1–B4.5) and the orchestrator (B4.6) land in later commits.
+Foundation (B4.0): macro, periods, stats, scale, types, data.load_universe().
+Pillars: financial_health (B4.1), valuation (B4.2), business_quality (B4.3).
 """
 
 from __future__ import annotations
 
 from .data import load_universe, Universe
+from .financial_health import score_financial_health
+from .valuation import score_valuation
+from .business_quality import score_business_quality, build_sector_context
 from .types import (
     Archetype, Coverage, Tier, DataCoverage,
     ScoreComponent, PillarResult, StockBundle, StockScoreResult,
@@ -23,6 +17,8 @@ from .types import (
 
 __all__ = [
     "load_universe", "Universe",
+    "score_financial_health", "score_valuation", "score_business_quality",
+    "build_sector_context",
     "Archetype", "Coverage", "Tier", "DataCoverage",
     "ScoreComponent", "PillarResult", "StockBundle", "StockScoreResult",
 ]

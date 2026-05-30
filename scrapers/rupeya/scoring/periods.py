@@ -1,25 +1,22 @@
 """
 Period algebra for the scoring engine.
 
-Our fundamentals use cumulative fiscal buckets (Q1/H1/9M/FY) per
-fundamentals/models.py. This module turns that raw series into the things an
-analyst actually reasons about: ordering, standalone quarters (by
-subtraction), trailing-twelve-months, and CAGR — all with honest None-returns
-when the data can't support the calculation (no silent fabrication).
+Cumulative fiscal buckets (Q1/H1/9M/FY) -> the things an analyst reasons about:
+ordering, standalone quarters (by subtraction), trailing-twelve-months, and
+robust growth -- with honest None-returns when data can't support a calc.
 """
 
 from __future__ import annotations
 
-# Cumulative coverage of each bucket, from fiscal-year start.
-KIND_MONTHS: dict[str, int] = {"Q1": 3, "H1": 6, "9M": 9, "FY": 12}
-# Sort order within a fiscal year.
-KIND_ORDER: dict[str, int] = {"Q1": 1, "H1": 2, "9M": 3, "FY": 4}
-# Factor to annualize a cumulative bucket (crude — flagged loudly when used).
-ANNUALIZE_FACTOR: dict[str, float] = {"Q1": 4.0, "H1": 2.0, "9M": 4.0 / 3.0, "FY": 1.0}
+import math
+
+KIND_MONTHS = {"Q1": 3, "H1": 6, "9M": 9, "FY": 12}
+KIND_ORDER = {"Q1": 1, "H1": 2, "9M": 3, "FY": 4}
+ANNUALIZE_FACTOR = {"Q1": 4.0, "H1": 2.0, "9M": 4.0 / 3.0, "FY": 1.0}
 
 
-def parse_period(period: str) -> tuple[int, str] | None:
-    """'2026-9M' -> (2026, '9M'); returns None if unparseable."""
+def parse_period(period):
+    """'2026-9M' -> (2026, '9M'); None if unparseable."""
     if not period or "-" not in period:
         return None
     year_s, kind = period.split("-", 1)
@@ -32,23 +29,14 @@ def parse_period(period: str) -> tuple[int, str] | None:
         return None
 
 
-def sort_key(period: str) -> tuple[int, int]:
-    """Chronological sort key: (fiscal_year, kind_order). Latest sorts last."""
+def sort_key(period):
+    """Chronological sort key: (fiscal_year, kind_order)."""
     p = parse_period(period)
     return (p[0], KIND_ORDER[p[1]]) if p else (0, 0)
 
 
-def cagr(begin: float | None, end: float | None, years: float) -> float | None:
-    """Compound annual growth rate over `years`.
-
-    Returns None when CAGR is mathematically meaningless:
-      - missing endpoints
-      - non-positive start (can't compound off zero/negative)
-      - non-positive end (a swing into loss — caller should report sign, not a rate)
-      - years <= 0
-    This is deliberate: a fabricated CAGR off a negative base is worse than
-    'unknown'. Growth scoring falls back to absolute-change sign when None.
-    """
+def cagr(begin, end, years):
+    """Compound annual growth rate; None if meaningless (non-positive base/end)."""
     if begin is None or end is None or years is None or years <= 0:
         return None
     if begin <= 0 or end <= 0:
@@ -56,29 +44,48 @@ def cagr(begin: float | None, end: float | None, years: float) -> float | None:
     return (end / begin) ** (1.0 / years) - 1.0
 
 
-def annualize(value: float | None, kind: str) -> float | None:
+def trend_growth(points):
+    """Robust annual growth from a (year, value) series. Returns (rate, span_years).
+
+    Fits a log-linear trend (least-squares of ln(value) vs year) over all
+    positive points, so a single low-base/COVID-dip endpoint can't distort the
+    rate the way naive first-to-last CAGR does. Falls back to two-point CAGR
+    when only two positive points exist; None when fewer than two. Non-positive
+    (loss) years are dropped since ln() is undefined.
+    """
+    pts = sorted((x, float(v)) for x, v in points if v is not None and v > 0)
+    if len(pts) < 2:
+        return None, None
+    span = float(pts[-1][0] - pts[0][0])
+    if len(pts) == 2:
+        x0, v0 = pts[0]
+        x1, v1 = pts[1]
+        n = x1 - x0
+        if n <= 0:
+            return None, span
+        return (v1 / v0) ** (1.0 / n) - 1.0, span
+    count = len(pts)
+    mean_x = sum(x for x, _ in pts) / count
+    mean_y = sum(math.log(v) for _, v in pts) / count
+    sxx = sum((x - mean_x) ** 2 for x, _ in pts)
+    sxy = sum((x - mean_x) * (math.log(v) - mean_y) for x, v in pts)
+    if sxx == 0:
+        return None, span
+    slope = sxy / sxx
+    return math.exp(slope) - 1.0, span
+
+
+def annualize(value, kind):
     """Scale a cumulative bucket to a full-year figure (crude; flag when used)."""
     if value is None or kind not in ANNUALIZE_FACTOR:
         return None
     return value * ANNUALIZE_FACTOR[kind]
 
 
-def standalone_from_cumulative(
-    cumulative_by_kind: dict[str, float | None]
-) -> dict[str, float | None]:
-    """Derive standalone quarter flows from cumulative buckets, by subtraction.
-
-    Input keys are kinds present for ONE fiscal year, e.g.
-        {'Q1': q1, 'H1': h1, '9M': nine, 'FY': fy}
-    Output:
-        Q1s = Q1
-        Q2s = H1 - Q1
-        Q3s = 9M - H1
-        Q4s = FY - 9M
-    Only emits a standalone value when both needed cumulatives are present.
-    """
+def standalone_from_cumulative(cumulative_by_kind):
+    """Standalone quarter flows from cumulative buckets, by subtraction."""
     g = cumulative_by_kind.get
-    out: dict[str, float | None] = {}
+    out = {}
     if g("Q1") is not None:
         out["Q1s"] = g("Q1")
     if g("H1") is not None and g("Q1") is not None:

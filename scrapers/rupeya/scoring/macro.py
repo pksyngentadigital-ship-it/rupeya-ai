@@ -1,61 +1,42 @@
 """
-Macro yardsticks for the scoring engine (Pakistan / PSX context).
+Macro yardsticks for the scoring engine (Pakistan / PSX).
 
-WHY THIS EXISTS
----------------
-A 50-year fund manager never reads a Pakistani growth number at face value.
-In a 10-20% policy-rate economy, +12% nominal revenue growth can be a REAL
-decline. So every growth / return number is judged against these macro
-hurdles, and valuation discounts off the sovereign (PIB) curve.
-
-These are deliberately *constants*, set by hand and version-controlled, not a
-live feed: they move slowly (quarterly at most), a live API would add cost +
-a network dependency, and the $0-API rule for the quant engine forbids it.
-
-⚠️  FOUNDER ACTION: verify these against current data and update the values +
-    AS_OF date below. They are the single yardstick the whole engine grades
-    against, so a stale KIBOR/PIB quietly biases every score. Only consumed
-    from B4.1 onward, so B4.0 does not depend on them being exact yet.
+In a 10-12% policy-rate economy, +12% nominal revenue can be a REAL decline, so
+growth/returns are judged against these hurdles and valuation discounts off the
+sovereign (PIB) curve. Constants, not a live feed (the $0-API quant rule).
+FOUNDER: refresh after each SBP MPC (~6 weeks) and update AS_OF.
+Sourced late May 2026 from SBP / PBS / Trading Economics.
 """
 
 from __future__ import annotations
 
-# As-of date for the values below. Update whenever you refresh them.
-AS_OF = "2026-05-29"  # ⚠️ placeholder — founder to confirm
+AS_OF = "2026-05-29"
 
-# --- Sovereign / rates (decimal, i.e. 0.12 == 12%) --------------------------
-POLICY_RATE: float = 0.11          # SBP policy rate            ⚠️ verify
-KIBOR_6M: float = 0.115            # 6-month KIBOR              ⚠️ verify
-PIB_10Y_YIELD: float = 0.125       # 10-year PIB (risk-free)    ⚠️ verify
-CPI_INFLATION_YOY: float = 0.06    # latest YoY CPI inflation   ⚠️ verify
+# Pakistan FLIPPED to tightening in Apr-2026: SBP hiked +100bps to 11.5% (first
+# hike since Jun-2023) as a supply/energy shock pushed CPI back to double digits.
+POLICY_RATE = 0.115        # SBP policy rate, 27-Apr-2026
+KIBOR_6M = 0.123           # 6M KIBOR ~11.84-12.79% band, 20-May-2026 (midpoint)
+PIB_10Y_YIELD = 0.1293     # 10Y PIB yield, 22-May-2026 (risk-free)
+CPI_INFLATION_YOY = 0.109  # CPI YoY, Apr-2026 (PBS)
 
-# --- Equity assumptions -----------------------------------------------------
-EQUITY_RISK_PREMIUM: float = 0.06  # PSX equity risk premium over PIB ⚠️ verify
+# Premium of PSX equities over local PIBs (PIB already embeds country/FX risk).
+# Cost of equity = PIB + ERP ~= 18.9%.
+EQUITY_RISK_PREMIUM = 0.06
 
-# Risk-free rate the valuation pillar discounts against.
-RISK_FREE: float = PIB_10Y_YIELD
+RISK_FREE = PIB_10Y_YIELD
 
 
-def real_growth(nominal: float, inflation: float | None = None) -> float:
-    """Convert a nominal growth rate to real (inflation-adjusted) terms.
-
-    real = (1 + nominal) / (1 + inflation) - 1
-    This is THE function that stops us calling 10% nominal growth 'good' when
-    inflation is 8%.
-    """
+def real_growth(nominal, inflation=None):
+    """Nominal growth -> real: (1+nom)/(1+infl)-1."""
     infl = CPI_INFLATION_YOY if inflation is None else inflation
     return (1.0 + nominal) / (1.0 + infl) - 1.0
 
 
-def discount_rate(beta: float = 1.0) -> float:
-    """CAPM-style discount/required-return = risk_free + beta * ERP."""
+def discount_rate(beta=1.0):
+    """CAPM-style required return = risk_free + beta * ERP."""
     return RISK_FREE + beta * EQUITY_RISK_PREMIUM
 
 
-def earnings_yield_spread(earnings_yield: float) -> float:
-    """Stock E/P minus the 10Y PIB yield.
-
-    Positive => equity is cheap vs the sovereign bond; negative => expensive.
-    The core Pakistan-specific valuation lens (blueprint 4.3.4).
-    """
+def earnings_yield_spread(earnings_yield):
+    """Stock E/P minus 10Y PIB yield. Positive => cheap vs the sovereign bond."""
     return earnings_yield - PIB_10Y_YIELD
