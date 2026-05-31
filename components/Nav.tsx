@@ -17,11 +17,13 @@ import SignOutButton from "./SignOutButton";
 import { getCurrentUser } from "@/lib/supabase/server";
 
 const PUBLIC_LINKS = [
+  { href: "/stocks", label: "Signal List" },
   { href: "/#how", label: "How it works" },
-  { href: "/stocks/OGDC", label: "Sample analysis" },
+  { href: "/stocks/ATLH", label: "Sample analysis" },
 ];
 
 const APP_LINKS = [
+  { href: "/stocks", label: "Signal List" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/portfolio/build", label: "Portfolio" },
   { href: "/portfolio/doctor", label: "Doctor" },

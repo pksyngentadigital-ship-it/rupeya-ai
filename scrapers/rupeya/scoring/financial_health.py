@@ -37,7 +37,7 @@ CASH_ANCHORS = [(-0.5, 0.5), (0.0, 1.5), (0.5, 3.0), (0.8, 4.0), (1.0, 4.7), (1.
 CIRCULAR_DEBT_SECTORS = {"Power", "Oil & Gas Marketing", "Refinery"}
 
 NEUTRAL_PRIOR = 2.5          # what we assume in the absence of evidence
-IMPLAUSIBLE_ROE = 0.45       # ROE above this is almost always one-off / data / annualisation
+IMPLAUSIBLE_ROE = 0.60       # data-error guard; genuine high-ROE payers (e.g. FFC ~54%) are real -- annualised-quarter artifacts are caught separately by the confidence haircut
 ANNUALIZED_CONFIDENCE = 0.5  # extra confidence haircut when TTM is a single annualised quarter
 
 

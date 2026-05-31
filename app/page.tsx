@@ -31,10 +31,10 @@ export default function HomePage() {
               a day.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Button as="a" href="/onboarding" variant="primary" size="lg">
-                Build my portfolio →
+              <Button as="a" href="/stocks" variant="primary" size="lg">
+                Explore the Signal List →
               </Button>
-              <Button as="a" href="/stocks/OGDC" variant="ghost" size="lg">
+              <Button as="a" href="/stocks/ATLH" variant="ghost" size="lg">
                 See a sample analysis
               </Button>
             </div>
